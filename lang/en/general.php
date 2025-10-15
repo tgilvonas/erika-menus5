@@ -5,5 +5,5 @@ return [
     'edit' => 'Edit',
     'delete' => 'Delete',
     'dashboard' => 'Dashboard',
-    'ingredients' => 'Ingredientai',
+    'ingredients' => 'Ingredients',
 ];
