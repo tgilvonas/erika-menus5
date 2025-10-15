@@ -5,4 +5,5 @@ return [
     'edit' => 'Redaguoti',
     'delete' => 'Ištrinti',
     'dashboard' => 'Statistikos skydas',
+    'ingredients' => 'Ingredientai',
 ];

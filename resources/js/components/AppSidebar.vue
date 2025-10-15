@@ -17,6 +17,7 @@ import { Link } from '@inertiajs/vue3';
 import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { trans } from '@/helpers/translator';
+import { route } from 'ziggy-js';
 
 const mainNavItems: NavItem[] = [
     {
@@ -24,6 +25,11 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     },
+    {
+        title: trans('ingredients'),
+        href: route('ingredients.index'),
+        icon: LayoutGrid,
+    }
 ];
 
 const footerNavItems: NavItem[] = [
