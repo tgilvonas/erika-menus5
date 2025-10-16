@@ -5,6 +5,33 @@ import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import PlaceholderPattern from '../components/PlaceholderPattern.vue';
 import { trans } from '@/helpers/translator';
+import {ref, onMounted} from "vue";
+import axios from "axios";
+import { route } from 'ziggy-js';
+
+let ingredients = ref([])
+let searchText = ref('')
+let loading = ref(false)
+
+onMounted(() => {
+    getIngredientsList()
+})
+
+function getIngredientsList() {
+    loading.value = true;
+    axios.get(route('ingredients.json_list'), {
+        params: {
+            order_by_field: 'title',
+            order_by_direction: 'asc',
+            page: 1,
+            search_text: searchText.value,
+            paginate_by: 10
+        }
+    }).then(function(response){
+        loading.value = false;
+        ingredients.value = response.data.data;
+    })
+}
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -19,10 +46,50 @@ const breadcrumbs: BreadcrumbItem[] = [
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div
-            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+            class="p-4"
         >
-            <div class="p-3">
-                <p>{{ trans('ingredients') }}</p>
+            <p class="mb-3">{{ trans('ingredients_list_description') }}</p>
+            <div class="flex items-center space-x-2 pb-3">
+                <label for="search" class="">
+                    {{ trans('ingredient')}}:
+                </label>
+                <input
+                    id="search"
+                    type="text"
+                    :placeholder="trans('enter_text_for_search')"
+                    v-model="searchText"
+                    class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
+                    @keyup="getIngredientsList"
+                />
+            </div>
+            <div class="mb-3">
+                <button class="">{{ trans('create_new') }}</button>
+            </div>
+            <table class="table-auto border-collapse w-full" v-if="ingredients.length">
+                <thead>
+                    <tr>
+                        <th class="border p-1">{{ trans('title') }}</th>
+                        <th class="border p-1">{{ trans('proteins') }}</th>
+                        <th class="border p-1">{{ trans('fat') }}</th>
+                        <th class="border p-1">{{ trans('carbohydrates') }}</th>
+                        <th class="border p-1">{{ trans('kilocalories') }}</th>
+                        <th class="border p-1"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="ingredient in ingredients">
+                        <td class="border p-1">{{ ingredient.title }}</td>
+                        <td class="border p-1 text-right">{{ ingredient.proteins.toFixed(3) }}</td>
+                        <td class="border p-1 text-right">{{ ingredient.fat.toFixed(3) }}</td>
+                        <td class="border p-1 text-right">{{ ingredient.carbohydrates.toFixed(3) }}</td>
+                        <td class="border p-1 text-right">{{ ingredient.calories.toFixed(3) }}</td>
+                        <td class="border p-1">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div v-else>
+                {{ trans('no_records') }}
             </div>
         </div>
     </AppLayout>
