@@ -5,6 +5,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import PlaceholderPattern from '../components/PlaceholderPattern.vue';
 import { Input } from '@/components/ui/input';
+import Button from '@/components/Button.vue'
 import { trans } from '@/helpers/translator';
 import {ref, onMounted} from "vue";
 import axios from "axios";
@@ -62,27 +63,29 @@ const breadcrumbs: BreadcrumbItem[] = [
                 />
             </div>
             <div class="mb-3">
-                <button class="">{{ trans('create_new') }}</button>
+                <Button color="green">{{ trans('create_new') }}</Button>
             </div>
             <table class="table-auto border-collapse w-full" v-if="ingredients.length">
                 <thead>
                     <tr>
-                        <th class="border p-1">{{ trans('title') }}</th>
-                        <th class="border p-1">{{ trans('proteins') }}</th>
-                        <th class="border p-1">{{ trans('fat') }}</th>
-                        <th class="border p-1">{{ trans('carbohydrates') }}</th>
-                        <th class="border p-1">{{ trans('kilocalories') }}</th>
-                        <th class="border p-1"></th>
+                        <th class="border p-2">{{ trans('title') }}</th>
+                        <th class="border p-2">{{ trans('proteins') }}</th>
+                        <th class="border p-2">{{ trans('fat') }}</th>
+                        <th class="border p-2">{{ trans('carbohydrates') }}</th>
+                        <th class="border p-2">{{ trans('kilocalories') }}</th>
+                        <th class="border p-2"></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="ingredient in ingredients">
-                        <td class="border p-1">{{ ingredient.title }}</td>
-                        <td class="border p-1 text-right">{{ ingredient.proteins.toFixed(3) }}</td>
-                        <td class="border p-1 text-right">{{ ingredient.fat.toFixed(3) }}</td>
-                        <td class="border p-1 text-right">{{ ingredient.carbohydrates.toFixed(3) }}</td>
-                        <td class="border p-1 text-right">{{ ingredient.calories.toFixed(3) }}</td>
-                        <td class="border p-1">
+                        <td class="border p-2">{{ ingredient.title }}</td>
+                        <td class="border p-2 text-right">{{ ingredient.proteins.toFixed(3) }}</td>
+                        <td class="border p-2 text-right">{{ ingredient.fat.toFixed(3) }}</td>
+                        <td class="border p-2 text-right">{{ ingredient.carbohydrates.toFixed(3) }}</td>
+                        <td class="border p-2 text-right">{{ ingredient.calories.toFixed(3) }}</td>
+                        <td class="border p-2">
+                            <Button>{{ trans('edit') }}</Button>
+                            <Button color="red">{{ trans('delete') }}</Button>
                         </td>
                     </tr>
                 </tbody>
