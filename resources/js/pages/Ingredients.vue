@@ -4,6 +4,7 @@ import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import PlaceholderPattern from '../components/PlaceholderPattern.vue';
+import { Input } from '@/components/ui/input';
 import { trans } from '@/helpers/translator';
 import {ref, onMounted} from "vue";
 import axios from "axios";
@@ -53,12 +54,10 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <label for="search" class="">
                     {{ trans('ingredient')}}:
                 </label>
-                <input
-                    id="search"
-                    type="text"
-                    :placeholder="trans('enter_text_for_search')"
+                <Input
+                    class="block w-full"
                     v-model="searchText"
-                    class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
+                    :placeholder="trans('enter_text_for_search')"
                     @keyup="getIngredientsList"
                 />
             </div>
