@@ -6,12 +6,14 @@ import { Head } from '@inertiajs/vue3';
 import PlaceholderPattern from '../components/PlaceholderPattern.vue';
 import { Input } from '@/components/ui/input';
 import Button from '@/components/Button.vue'
+import Paginator from '@/components/Paginator.vue'
 import { trans } from '@/helpers/translator';
 import {ref, onMounted} from "vue";
 import axios from "axios";
 import { route } from 'ziggy-js';
 
 let ingredients = ref([])
+let pagination = ref([])
 let searchText = ref('')
 let loading = ref(false)
 
@@ -30,8 +32,9 @@ function getIngredientsList() {
             paginate_by: 10
         }
     }).then(function(response){
-        loading.value = false;
-        ingredients.value = response.data.data;
+        loading.value = false
+        ingredients.value = response.data.data
+        pagination.value = response.data.links
     })
 }
 
@@ -92,6 +95,9 @@ const breadcrumbs: BreadcrumbItem[] = [
             </table>
             <div v-else>
                 {{ trans('no_records') }}
+            </div>
+            <div class="">
+                <Paginator :pagination="pagination" />
             </div>
         </div>
     </AppLayout>
