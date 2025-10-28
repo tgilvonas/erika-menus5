@@ -8,9 +8,10 @@ import { Input } from '@/components/ui/input';
 import Button from '@/components/Button.vue'
 import Paginator from '@/components/Paginator.vue'
 import { trans } from '@/helpers/translator';
-import {ref, onMounted} from "vue";
+import {ref, onMounted, onBeforeUnmount} from "vue";
 import axios from "axios";
 import { route } from 'ziggy-js';
+import emitter from '@/eventBus.js'
 
 let ingredients = ref([])
 let pagination = ref([])
@@ -18,16 +19,24 @@ let searchText = ref('')
 let loading = ref(false)
 
 onMounted(() => {
-    getIngredientsList()
+    getIngredientsList(1)
+    emitter.on('paginatorClicked', handlePaginatorClick)
+})
+onBeforeUnmount(() => {
+    emitter.off('paginatorClicked', handlePaginatorClick)
 })
 
-function getIngredientsList() {
+function handlePaginatorClick(payload: object) {
+    getIngredientsList(payload.page)
+}
+
+function getIngredientsList(page: number) {
     loading.value = true;
     axios.get(route('ingredients.json_list'), {
         params: {
             order_by_field: 'title',
             order_by_direction: 'asc',
-            page: 1,
+            page: page,
             search_text: searchText.value,
             paginate_by: 10
         }
