@@ -89,7 +89,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="ingredient in ingredients">
+                    <tr v-for="(ingredient, key) in ingredients" v-bind:key="key">
                         <td class="border p-2">{{ ingredient.title }}</td>
                         <td class="border p-2 text-right">{{ ingredient.proteins.toFixed(3) }}</td>
                         <td class="border p-2 text-right">{{ ingredient.fat.toFixed(3) }}</td>
