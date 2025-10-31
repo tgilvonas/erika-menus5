@@ -78,6 +78,11 @@ const breadcrumbs: BreadcrumbItem[] = [
             <div class="mb-3">
                 <Button color="green">{{ trans('create_new') }}</Button>
             </div>
+            <!--
+            <div class="text-center" v-if="loading">
+                <img class="mx-auto" src="/images/loader.svg" alt="{{ trans('loading') }}" />
+            </div>
+            -->
             <table class="table-auto border-collapse w-full" v-if="ingredients.length">
                 <thead>
                     <tr>
@@ -103,7 +108,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </tr>
                 </tbody>
             </table>
-            <div v-else>
+            <div v-else-if="!loading">
                 {{ trans('no_records') }}
             </div>
             <div class="">
