@@ -12,6 +12,7 @@ import {ref, onMounted, onBeforeUnmount} from "vue";
 import axios from "axios";
 import { route } from 'ziggy-js';
 import emitter from '@/eventBus.js'
+import state from '@/state.js'
 
 let ingredients = ref([])
 let pagination = ref([])
