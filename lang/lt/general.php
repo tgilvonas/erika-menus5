@@ -112,4 +112,5 @@ return [
     'new_password' => 'Naujas slaptažodis',
     'confirm_password' => 'Pakartokite slaptažodį',
     'loading' => 'Kraunasi...',
+    'delete_record' => 'Įrašo trynimas',
 ];

@@ -7,6 +7,7 @@ import PlaceholderPattern from '../components/PlaceholderPattern.vue';
 import { Input } from '@/components/ui/input';
 import Button from '@/components/Button.vue'
 import Paginator from '@/components/Paginator.vue'
+import Modal from '@/components/Modal.vue'
 import { trans } from '@/helpers/translator';
 import {ref, onMounted, onBeforeUnmount} from "vue";
 import axios from "axios";
@@ -63,6 +64,22 @@ const breadcrumbs: BreadcrumbItem[] = [
         <div
             class="p-4"
         >
+            <Modal modal-name="ingredient">
+                <template #modal_title>
+                    {{ trans('ingredient') }}
+                </template>
+                <template #content>
+                    <div>Ingredient</div>
+                </template>
+            </Modal>
+            <Modal modal-name="objectToDelete">
+                <template #modal_title>
+                    {{ trans('delete_record') }}
+                </template>
+                <template #content>
+                    <div>Object to delete</div>
+                </template>
+            </Modal>
             <p class="mb-3">{{ trans('ingredients_list_description') }}</p>
             <div class="flex items-center space-x-2 pb-3">
                 <label for="search" class="">
@@ -76,7 +93,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                 />
             </div>
             <div class="mb-3">
-                <Button color="green">{{ trans('create_new') }}</Button>
+                <Button @click="state.callModal({modal: 'ingredient', objectInModal: {}})" color="green">
+                    {{ trans('create_new') }}
+                </Button>
             </div>
             <!--
             <div class="text-center" v-if="loading">
@@ -102,8 +121,12 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <td class="border p-2 text-right">{{ ingredient.carbohydrates.toFixed(3) }}</td>
                         <td class="border p-2 text-right">{{ ingredient.calories.toFixed(3) }}</td>
                         <td class="border p-2">
-                            <Button>{{ trans('edit') }}</Button>
-                            <Button color="red">{{ trans('delete') }}</Button>
+                            <Button @click="state.callModal({modal: 'ingredient', objectInModal: ingredient})">
+                                {{ trans('edit') }}
+                            </Button>
+                            <Button @click="state.callModal({modal: 'objectToDelete', objectInModal: ingredient})" color="red">
+                                {{ trans('delete') }}
+                            </Button>
                         </td>
                     </tr>
                 </tbody>

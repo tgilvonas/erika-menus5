@@ -111,4 +111,5 @@ return [
     'new_password' => 'New Password',
     'confirm_password' => 'Confirm Password',
     'loading' => 'Loading...',
+    'delete_record' => 'Delete record?',
 ];

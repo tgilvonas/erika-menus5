@@ -1,4 +1,6 @@
-const modals= {
+import { reactive } from 'vue'
+
+const modals= reactive({
     day: {
         zIndex: 3100,
         show: false,
@@ -42,15 +44,15 @@ const modals= {
         objectInModal: false,
         modalContentLoaded: false
     }
-}
+})
 
 export default {
     modals: modals,
-    callModal (state, data) {
+    callModal (data) {
         modals[data.modal]['show'] = true
         modals[data.modal]['objectInModal'] = data.objectInModal
     },
-    hideModal (state, data) {
+    hideModal (data) {
         modals[data.modal]['show'] = false
         modals[data.modal]['modalContentLoaded'] = false
         modals[data.modal]['objectInModal'] = false
