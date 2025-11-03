@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import Button from '@/components/Button.vue'
 import Paginator from '@/components/Paginator.vue'
 import Modal from '@/components/Modal.vue'
+import Ingredient from "@/components/forms/Ingredient.vue";
 import { trans } from '@/helpers/translator';
 import {ref, onMounted, onBeforeUnmount} from "vue";
 import axios from "axios";
@@ -69,7 +70,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                     {{ trans('ingredient') }}
                 </template>
                 <template #content>
-                    <div>Ingredient</div>
+                    <div>
+                        <Ingredient :ingredient="state.modals['ingredient'].objectInModal" />
+                    </div>
                 </template>
             </Modal>
             <Modal modal-name="objectToDelete">

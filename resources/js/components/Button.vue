@@ -17,8 +17,8 @@
 import { computed } from 'vue'
 
 interface Props {
-    color?: 'blue' | 'red' | 'green'
-    disabled?: boolean
+    color?: 'blue' | 'red' | 'green' | 'gray'
+        disabled?: boolean
     loading?: boolean
 }
 
@@ -36,6 +36,8 @@ const colorClasses = computed(() => {
             return 'bg-red-600 hover:bg-red-700 focus:ring-red-300'
         case 'green':
             return 'bg-green-600 hover:bg-green-700 focus:ring-green-300'
+        case 'gray':
+            return 'bg-gray-600 hover:bg-gray-700 focus:ring-gray-300'
         default:
             return 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-300'
     }
