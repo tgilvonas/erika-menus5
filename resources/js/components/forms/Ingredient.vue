@@ -2,16 +2,17 @@
 import Button from '@/components/Button.vue'
 import { Input } from '@/components/ui/input';
 import { trans } from '@/helpers/translator';
-import {ref} from "vue";
+import {ref, reactive, onMounted} from "vue";
 import state from '@/state.js'
 
-defineProps({
+const props = defineProps({
     ingredient: {
         type: Object,
         default: {}
     }
 })
 
+const ingredient = reactive({...props.ingredient})
 const calculateCaloriesAutomatically = ref(true)
 const formIsValid = ref(true)
 
@@ -20,23 +21,69 @@ const associatedCalories = {
     fat: 9,
     carbohydrates: 4
 }
+const ingredientFields = ['title', 'proteins', 'fat', 'carbohydrates', 'calories']
+const errors: Record<string, string> = initErrorsObject()
 
-function calculateAndValidate()
-{
+function calculateAndValidate() {
+    formIsValid.value = true
+    const errors: Record<string, string> = initErrorsObject()
 
+    if (typeof ingredient.title === 'undefined' || ingredient.title.length === 0) {
+        errors.title = trans('ingredient_title_is_required')
+        formIsValid.value = false
+    }
+
+    for (let property of ingredientFields) {
+        if (property !== 'title' && property !== 'id') {
+            if (typeof ingredient[property] == 'undefined' || isNaN(convertToFloat(ingredient[property]))) {
+                errors[property] = trans('value_must_be_numeric')
+                formIsValid.value = false
+            }
+        }
+    }
+
+    let sumOfMasses = 0;
+    if (calculateCaloriesAutomatically.value) {
+        ingredient.calories = 0;
+    }
+    for (let property in ingredient) {
+        if (property !== 'title' && property !== 'calories' && property !== 'id') {
+            sumOfMasses += convertToFloat(ingredient[property]);
+            if (calculateCaloriesAutomatically.value) {
+                ingredient.calories += convertToFloat(ingredient[property]) * associatedCalories[property]
+            }
+        }
+    }
+
+    if (sumOfMasses>1) {
+        formIsValid.value = false
+        errors.carbohydrates = trans('sum_is_more_than_1_gram')
+        errors.fat = trans('sum_is_more_than_1_gram')
+        errors.proteins = trans('sum_is_more_than_1_gram')
+    }
 }
 
 function saveIngredient() {
-
+    calculateAndValidate()
 }
 
-const ingredientFields = ['title', 'proteins', 'fat', 'carbohydrates', 'calories']
-const errors = {
-    title: '',
-    proteins: '',
-    fat: '',
-    carbohydrates: '',
-    calories: ''
+function convertToFloat(value: string | number) {
+    if (typeof value === 'number') {
+        return value
+    }
+    const normalized = value.replace(',', '.')
+    const parsed = parseFloat(normalized)
+    return isNaN(parsed) ? 0 : parsed
+}
+
+function initErrorsObject(): Record<string, string> {
+    return {
+        title: '',
+        proteins: '',
+        fat: '',
+        carbohydrates: '',
+        calories: ''
+    }
 }
 
 </script>
