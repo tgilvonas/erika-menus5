@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import Button from '@/components/Button.vue'
 import Paginator from '@/components/Paginator.vue'
 import Modal from '@/components/Modal.vue'
+import DeleteDialog from '@/components/DeleteDialog.vue'
 import Ingredient from "@/components/forms/Ingredient.vue";
 import { trans } from '@/helpers/translator';
 import {ref, onMounted, onBeforeUnmount} from "vue";
@@ -80,7 +81,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                     {{ trans('delete_record') }}
                 </template>
                 <template #content>
-                    <div>Object to delete</div>
+                    <div>
+                        <DeleteDialog />
+                    </div>
                 </template>
             </Modal>
             <p class="mb-3">{{ trans('ingredients_list_description') }}</p>
