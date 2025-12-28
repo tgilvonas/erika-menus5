@@ -4,11 +4,14 @@ import { Input } from '@/components/ui/input';
 import { trans } from '@/helpers/translator';
 import {ref, reactive, onMounted} from "vue";
 import state from '@/state.js'
+import axios from "axios";
+import { route } from 'ziggy-js';
+import emitter from '@/eventBus.js'
 
 const props = defineProps({
     ingredient: {
         type: Object,
-        default: {}
+        default: null
     }
 })
 
@@ -64,7 +67,31 @@ function calculateAndValidate() {
 }
 
 function saveIngredient() {
+
     calculateAndValidate()
+
+    if (formIsValid.value) {
+        state.modals.ingredient.modalContentLoaded = false
+        axios.post(route('ingredients.save'), {
+            id: ingredient.id,
+            proteins: ingredient.proteins,
+            fat: ingredient.fat,
+            carbohydrates: ingredient.carbohydrates,
+            calories: ingredient.calories,
+            title: ingredient.title
+        }).then(function(response){
+            if (response.data.result === 'ingredient_exists') {
+                errors.title = trans('ingredient_already_exists')
+                formIsValid.value = false
+                state.modals.ingredient.modalContentLoaded = true
+            } else {
+                state.hideModal({modal: 'ingredient'})
+                state.flashSuccessMessage({message: response.data.message})
+                ingredient.id = response.data?.ingredient?.id
+                emitter.emit('ingredientSaved', {ingredient})
+            }
+        });
+    }
 }
 
 function convertToFloat(value: string | number) {

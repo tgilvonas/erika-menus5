@@ -4,50 +4,62 @@ const modals= reactive({
     day: {
         zIndex: 3100,
         show: false,
-        objectInModal: false,
+        objectInModal: null,
         modalContentLoaded: false
     },
     dish: {
         zIndex: 3200,
         show: false,
-        objectInModal: false,
+        objectInModal: null,
         modalContentLoaded: false
     },
     ingredient: {
         zIndex: 3300,
         show: false,
-        objectInModal: false,
+        objectInModal: null,
         modalContentLoaded: false
     },
     eater: {
         zIndex: 3400,
         show: false,
-        objectInModal: false,
+        objectInModal: null,
         modalContentLoaded: false
     },
     dietType: {
         zIndex: 3500,
         show: false,
-        objectInModal: false,
+        objectInModal: null,
         savedObject: false,
         modalContentLoaded: false
     },
     mealtime: {
         zIndex: 3600,
         show: false,
-        objectInModal: false,
+        objectInModal: null,
         modalContentLoaded: false
     },
     objectToDelete: {
         zIndex: 5000,
         show: false,
-        objectInModal: false,
+        objectInModal: null,
         modalContentLoaded: false
+    }
+})
+
+const messages = reactive({
+    success: {
+        show: false,
+        messageString: '',
+    },
+    error: {
+        show: false,
+        messageString: '',
     }
 })
 
 export default {
     modals: modals,
+    messages: messages,
     callModal (data) {
         modals[data.modal]['show'] = true
         modals[data.modal]['objectInModal'] = data.objectInModal
@@ -56,5 +68,19 @@ export default {
         modals[data.modal]['show'] = false
         modals[data.modal]['modalContentLoaded'] = false
         modals[data.modal]['objectInModal'] = false
+    },
+    flashSuccessMessage (data) {
+        messages.success.messageString = data.message
+        messages.success.show = true
+    },
+    hideSuccessMessage () {
+        messages.success.show = false
+    },
+    flashErrorMessage (data) {
+        messages.error.messageString = data.message
+        messages.error.show = true
+    },
+    hideErrorMessage () {
+        messages.error.show = false
     },
 }

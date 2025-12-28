@@ -25,13 +25,21 @@ let loading = ref(false)
 onMounted(() => {
     getIngredientsList(1)
     emitter.on('paginatorClicked', handlePaginatorClick)
+    emitter.on('ingredientSaved', handleListChanged)
+    emitter.on('objectDeleted', handleListChanged)
 })
 onBeforeUnmount(() => {
     emitter.off('paginatorClicked', handlePaginatorClick)
+    emitter.off('ingredientSaved', handleListChanged)
+    emitter.off('objectDeleted', handleListChanged)
 })
 
 function handlePaginatorClick(payload: object) {
     getIngredientsList(payload.page)
+}
+
+function handleListChanged() {
+    getIngredientsList(1)
 }
 
 function getIngredientsList(page: number) {
@@ -72,7 +80,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </template>
                 <template #content>
                     <div>
-                        <Ingredient :ingredient="state.modals['ingredient'].objectInModal" />
+                        <Ingredient :ingredient="state.modals.ingredient.objectInModal" />
                     </div>
                 </template>
             </Modal>
@@ -82,7 +90,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </template>
                 <template #content>
                     <div>
-                        <DeleteDialog />
+                        <DeleteDialog :delete-url="route('ingredients.delete').toString()" />
                     </div>
                 </template>
             </Modal>
