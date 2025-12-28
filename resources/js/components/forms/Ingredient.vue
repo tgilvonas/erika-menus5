@@ -154,9 +154,9 @@ function initErrorsObject(): Record<string, string> {
                     step="0.0001"
                     class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 focus:border-teal-500 focus:ring-teal-500"
                 />
-                <p v-if="errors.proteins.length > 0" class="mt-1 text-sm text-red-500">
+                <div v-if="errors.proteins.length > 0" class="mt-1 text-sm text-red-500">
                     {{ errors.proteins }}
-                </p>
+                </div>
             </div>
             <div>
                 <label for="fat" class="block text-sm font-medium text-gray-700 dark:text-gray-200">
@@ -172,9 +172,9 @@ function initErrorsObject(): Record<string, string> {
                     step="0.0001"
                     class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 focus:border-teal-500 focus:ring-teal-500"
                 />
-                <p v-if="errors.fat.length > 0" class="mt-1 text-sm text-red-500">
+                <div v-if="errors.fat.length > 0" class="mt-1 text-sm text-red-500">
                     {{ errors.fat }}
-                </p>
+                </div>
             </div>
             <div>
                 <label for="carbohydrates" class="block text-sm font-medium text-gray-700 dark:text-gray-200">
@@ -191,9 +191,9 @@ function initErrorsObject(): Record<string, string> {
                     step="0.0001"
                     class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 focus:border-teal-500 focus:ring-teal-500"
                 />
-                <p v-if="errors.carbohydrates.length > 0" class="mt-1 text-sm text-red-500">
+                <div v-if="errors.carbohydrates.length > 0" class="mt-1 text-sm text-red-500">
                     {{ errors.carbohydrates }}
-                </p>
+                </div>
             </div>
             <div class="flex items-center space-x-2">
                 <input
@@ -223,12 +223,12 @@ function initErrorsObject(): Record<string, string> {
                     step="0.0001"
                     class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 focus:border-teal-500 focus:ring-teal-500 disabled:opacity-60 disabled:cursor-not-allowed"
                 />
-                <p
+                <div
                     v-if="errors.calories.length > 0 && !calculateCaloriesAutomatically"
                     class="mt-1 text-sm text-red-500"
                 >
                     {{ errors.calories }}
-                </p>
+                </div>
             </div>
         </div>
 

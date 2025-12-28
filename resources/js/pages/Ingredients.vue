@@ -10,6 +10,7 @@ import Paginator from '@/components/Paginator.vue'
 import Modal from '@/components/Modal.vue'
 import DeleteDialog from '@/components/DeleteDialog.vue'
 import Ingredient from "@/components/forms/Ingredient.vue";
+import FlashMessage from "@/components/FlashMessage.vue";
 import { trans } from '@/helpers/translator';
 import {ref, onMounted, onBeforeUnmount} from "vue";
 import axios from "axios";
@@ -74,6 +75,8 @@ const breadcrumbs: BreadcrumbItem[] = [
         <div
             class="p-4"
         >
+            <FlashMessage type="success"></FlashMessage>
+            <FlashMessage type="error"></FlashMessage>
             <Modal modal-name="ingredient">
                 <template #modal_title>
                     {{ trans('ingredient') }}
