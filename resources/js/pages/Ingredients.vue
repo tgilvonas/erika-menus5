@@ -3,7 +3,6 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import PlaceholderPattern from '../components/PlaceholderPattern.vue';
 import { Input } from '@/components/ui/input';
 import Button from '@/components/Button.vue'
 import Paginator from '@/components/Paginator.vue'
@@ -18,10 +17,10 @@ import { route } from 'ziggy-js';
 import emitter from '@/eventBus.js'
 import state from '@/state.js'
 
-let ingredients = ref([])
-let pagination = ref([])
-let searchText = ref('')
-let loading = ref(false)
+const ingredients = ref([])
+const pagination = ref([])
+const searchText = ref('')
+const loading = ref(false)
 
 onMounted(() => {
     getIngredientsList(1)

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DietTypesController;
 use App\Http\Controllers\IngredientsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -17,6 +18,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/ingredients/json-list', [IngredientsController::class, 'getJsonList'])->name('ingredients.json_list');
     Route::post('/ingredients/save', [IngredientsController::class, 'save'])->name('ingredients.save');
     Route::post('/ingredients/delete', [IngredientsController::class, 'delete'])->name('ingredients.delete');
+
+    Route::get('/diet-types', [DietTypesController::class, 'index'])->name('diet_types.index');
+    Route::get('/diet-types/json-list', [DietTypesController::class, 'getJsonList'])->name('diet_types.json_list');
+    Route::post('/diet-types/save', [DietTypesController::class, 'save'])->name('diet_types.save');
+    Route::post('/diet-types/delete', [DietTypesController::class, 'delete'])->name('diet_types.delete');
 });
 
 require __DIR__.'/settings.php';

@@ -29,6 +29,11 @@ const mainNavItems: NavItem[] = [
         title: trans('ingredients'),
         href: route('ingredients.index'),
         icon: LayoutGrid,
+    },
+    {
+        title: trans('diets'),
+        href: route('diet_types.index'),
+        icon: LayoutGrid,
     }
 ];
 

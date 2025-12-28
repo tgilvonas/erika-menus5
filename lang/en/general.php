@@ -100,7 +100,6 @@ return [
     'add_mealtime' => 'Add mealtime',
     'add_dish' => 'Add dish',
     'dashboard' => 'Dashboard',
-    'metrics_content' => 'Here should be some metrics',
     'export_pdf' => 'Export to PDF',
     'sum' => 'Sum',
     'profile_information' => 'Profile information',
@@ -112,4 +111,5 @@ return [
     'confirm_password' => 'Confirm Password',
     'loading' => 'Loading...',
     'delete_record' => 'Delete record?',
+    'is_assigned_to_eater_impossible_to_delete' => ' is assigned to eater, so it is impossible to delete',
 ];
