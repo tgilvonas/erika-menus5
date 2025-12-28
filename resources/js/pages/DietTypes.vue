@@ -9,6 +9,9 @@ import axios from "axios";
 import {route} from "ziggy-js";
 import state from "@/state";
 import Button from '@/components/Button.vue'
+import FlashMessage from "@/components/FlashMessage.vue";
+import Modal from '@/components/Modal.vue'
+import DeleteDialog from "@/components/DeleteDialog.vue";
 
 const dietTypes = ref([])
 const pagination = ref([])
@@ -59,9 +62,19 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head :title="trans('diets')" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div
-            class="p-4"
-        >
+        <div class="p-4">
+            <FlashMessage type="success"></FlashMessage>
+            <FlashMessage type="error"></FlashMessage>
+            <Modal modal-name="objectToDelete">
+                <template #modal_title>
+                    {{ trans('delete_record') }}
+                </template>
+                <template #content>
+                    <div>
+                        <DeleteDialog :delete-url="route('diet_types.delete').toString()" />
+                    </div>
+                </template>
+            </Modal>
             <div class="mb-3">
                 <Button @click="state.callModal({modal: 'dietType', objectInModal: {}})" color="green">
                   {{ trans('create_new') }}

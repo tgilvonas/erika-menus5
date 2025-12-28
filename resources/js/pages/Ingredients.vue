@@ -71,9 +71,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head :title="trans('ingredients')" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div
-            class="p-4"
-        >
+        <div class="p-4">
             <FlashMessage type="success"></FlashMessage>
             <FlashMessage type="error"></FlashMessage>
             <Modal modal-name="ingredient">
