@@ -41,7 +41,7 @@ return [
     'no_records' => 'Įrašų nerasta',
     'error_occured' => 'Įvyko klaida',
     'dialog' => 'Dialogas',
-    'are_you_sure_you_want_to_delete_this_record_2' => 'Ar tikrai norite ištrinti šį įrašą?',
+    'are_you_sure_you_want_to_delete_this_record_2' => 'Ar tikrai norite ištrinti šį įrašą',
     'cancel' => 'Atšaukti',
     'contents_in_1_gram' => 'Ingrediento sudėtis 1 grame',
     'calculate_kilocalories_automatically' => 'Skaičiuoti kilokalorijas automatiškai',

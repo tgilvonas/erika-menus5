@@ -8,6 +8,7 @@ import {ref, onMounted, onBeforeUnmount} from "vue";
 import axios from "axios";
 import {route} from "ziggy-js";
 import state from "@/state";
+import Button from '@/components/Button.vue'
 
 const dietTypes = ref([])
 const pagination = ref([])
@@ -61,6 +62,11 @@ const breadcrumbs: BreadcrumbItem[] = [
         <div
             class="p-4"
         >
+            <div class="mb-3">
+                <Button @click="state.callModal({modal: 'dietType', objectInModal: {}})" color="green">
+                  {{ trans('create_new') }}
+                </Button>
+            </div>
             <table class="table-auto border-collapse w-full" v-if="dietTypes.length">
                 <thead>
                 <tr>
@@ -80,7 +86,12 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <td class="border p-2 text-right">{{ dietType.carbohydrates_min.toFixed(2) }} - {{ dietType.carbohydrates_max.toFixed(2) }}</td>
                     <td class="border p-2 text-right">{{ dietType.calories_min.toFixed(2) }} - {{ dietType.calories_max.toFixed(2) }}</td>
                     <td class="border p-2">
-
+                        <Button @click="state.callModal({modal: 'dietType', objectInModal: dietType})">
+                            {{ trans('edit') }}
+                        </Button>
+                        <Button @click="state.callModal({modal: 'objectToDelete', objectInModal: dietType})" color="red">
+                            {{ trans('delete') }}
+                        </Button>
                     </td>
                 </tr>
                 </tbody>
