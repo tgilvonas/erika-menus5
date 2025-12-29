@@ -1,4 +1,4 @@
-import { reactive } from 'vue'
+import { reactive } from 'vue';
 
 const modals= reactive({
     day: {
@@ -44,7 +44,7 @@ const modals= reactive({
         objectInModal: null,
         modalContentLoaded: false
     }
-})
+});
 
 const messages = reactive({
     success: {
@@ -55,32 +55,33 @@ const messages = reactive({
         show: false,
         messageString: '',
     }
-})
+});
 
 export default {
     modals: modals,
     messages: messages,
+    savedObject: reactive({}),
     callModal (data) {
-        modals[data.modal]['show'] = true
-        modals[data.modal]['objectInModal'] = data.objectInModal
+        modals[data.modal]['show'] = true;
+        modals[data.modal]['objectInModal'] = data.objectInModal;
     },
     hideModal (data) {
-        modals[data.modal]['show'] = false
-        modals[data.modal]['modalContentLoaded'] = false
-        modals[data.modal]['objectInModal'] = false
+        modals[data.modal]['show'] = false;
+        modals[data.modal]['modalContentLoaded'] = false;
+        modals[data.modal]['objectInModal'] = false;
     },
     flashSuccessMessage (data) {
-        messages.success.messageString = data.message
-        messages.success.show = true
+        messages.success.messageString = data.message;
+        messages.success.show = true;
     },
     hideSuccessMessage () {
-        messages.success.show = false
+        messages.success.show = false;
     },
     flashErrorMessage (data) {
-        messages.error.messageString = data.message
-        messages.error.show = true
+        messages.error.messageString = data.message;
+        messages.error.show = true;
     },
     hideErrorMessage () {
-        messages.error.show = false
+        messages.error.show = false;
     },
 }

@@ -19,10 +19,10 @@ import Button from '@/components/Button.vue'
 import emitter from '@/eventBus.js'
 
 function goToPage(url) {
-    const urlObject = new URL(url)
-    const page = urlObject.searchParams.get('page')
+    const urlObject = new URL(url);
+    const page = urlObject.searchParams.get('page');
     if (page !== null) {
-        emitter.emit('paginatorClicked', { page })
+        emitter.emit('paginatorClicked', { page });
     }
 }
 

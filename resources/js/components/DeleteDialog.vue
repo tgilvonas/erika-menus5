@@ -1,28 +1,28 @@
 <script setup lang="ts">
 import { trans } from '@/helpers/translator';
-import state from '@/state.js'
-import Button from '@/components/Button.vue'
+import state from '@/state.js';
+import Button from '@/components/Button.vue';
 import axios from "axios";
-import emitter from '@/eventBus.js'
+import emitter from '@/eventBus.js';
 
 const props = defineProps({
     deleteUrl: {
         type: String,
         required: true
     }
-})
+});
 
 function deleteObject() {
-    state.modals.objectToDelete.modalContentLoaded = false
+    state.modals.objectToDelete.modalContentLoaded = false;
     axios.post(props.deleteUrl, {
         id: state.modals.objectToDelete?.objectInModal?.id
     }).then((response) => {
         state.hideModal({modal: 'objectToDelete'})
         if (response.data.result === 'error') {
-            state.flashErrorMessage({message: response.data.message})
+            state.flashErrorMessage({message: response.data.message});
         } else {
-            state.flashSuccessMessage({message: response.data.message})
-            emitter.emit('objectDeleted', state.modals.objectToDelete?.objectInModal)
+            state.flashSuccessMessage({message: response.data.message});
+            emitter.emit('objectDeleted', state.modals.objectToDelete?.objectInModal);
         }
     });
 }

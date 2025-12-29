@@ -4,42 +4,42 @@ import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import { Input } from '@/components/ui/input';
-import Button from '@/components/Button.vue'
-import Paginator from '@/components/Paginator.vue'
-import Modal from '@/components/Modal.vue'
-import DeleteDialog from '@/components/DeleteDialog.vue'
+import Button from '@/components/Button.vue';
+import Paginator from '@/components/Paginator.vue';
+import Modal from '@/components/Modal.vue';
+import DeleteDialog from '@/components/DeleteDialog.vue';
 import Ingredient from "@/components/forms/Ingredient.vue";
 import FlashMessage from "@/components/FlashMessage.vue";
 import { trans } from '@/helpers/translator';
 import {ref, onMounted, onBeforeUnmount} from "vue";
 import axios from "axios";
 import { route } from 'ziggy-js';
-import emitter from '@/eventBus.js'
-import state from '@/state.js'
+import emitter from '@/eventBus.js';
+import state from '@/state.js';
 
-const ingredients = ref([])
-const pagination = ref([])
-const searchText = ref('')
-const loading = ref(false)
+const ingredients = ref([]);
+const pagination = ref([]);
+const searchText = ref('');
+const loading = ref(false);
 
 onMounted(() => {
-    getIngredientsList(1)
-    emitter.on('paginatorClicked', handlePaginatorClick)
-    emitter.on('ingredientSaved', handleListChanged)
-    emitter.on('objectDeleted', handleListChanged)
-})
+    getIngredientsList(1);
+    emitter.on('paginatorClicked', handlePaginatorClick);
+    emitter.on('ingredientSaved', handleListChanged);
+    emitter.on('objectDeleted', handleListChanged);
+});
 onBeforeUnmount(() => {
-    emitter.off('paginatorClicked', handlePaginatorClick)
-    emitter.off('ingredientSaved', handleListChanged)
-    emitter.off('objectDeleted', handleListChanged)
-})
+    emitter.off('paginatorClicked', handlePaginatorClick);
+    emitter.off('ingredientSaved', handleListChanged);
+    emitter.off('objectDeleted', handleListChanged);
+});
 
 function handlePaginatorClick(payload: object) {
-    getIngredientsList(payload.page)
+    getIngredientsList(payload.page);
 }
 
 function handleListChanged() {
-    getIngredientsList(1)
+    getIngredientsList(1);
 }
 
 function getIngredientsList(page: number) {
@@ -53,9 +53,9 @@ function getIngredientsList(page: number) {
             paginate_by: 10
         }
     }).then(function(response){
-        loading.value = false
-        ingredients.value = response.data.data
-        pagination.value = response.data.links
+        loading.value = false;
+        ingredients.value = response.data.data;
+        pagination.value = response.data.links;
     })
 }
 

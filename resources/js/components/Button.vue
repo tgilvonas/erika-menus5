@@ -26,7 +26,7 @@ const props = withDefaults(defineProps<Props>(), {
     color: 'blue',
     disabled: false,
     loading: false,
-})
+});
 
 const baseClasses = `p-2 mr-2 rounded-lg font-semibold text-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-150 cursor-pointer`
 

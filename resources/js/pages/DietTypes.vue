@@ -8,28 +8,33 @@ import {ref, onMounted, onBeforeUnmount} from "vue";
 import axios from "axios";
 import {route} from "ziggy-js";
 import state from "@/state";
-import Button from '@/components/Button.vue'
+import Button from '@/components/Button.vue';
 import FlashMessage from "@/components/FlashMessage.vue";
-import Modal from '@/components/Modal.vue'
+import Modal from '@/components/Modal.vue';
 import DeleteDialog from "@/components/DeleteDialog.vue";
+import emitter from "@/eventBus";
+import DietType from "@/components/forms/DietType.vue";
 
-const dietTypes = ref([])
-const pagination = ref([])
-const searchText = ref('')
-const loading = ref(false)
+const dietTypes = ref([]);
+const pagination = ref([]);
+const searchText = ref('');
+const loading = ref(false);
 
 onMounted(() => {
-    getDietTypesList(1)
-})
+    getDietTypesList(1);
+    emitter.on('dietTypeSaved', handleListChanged);
+    emitter.on('objectDeleted', handleListChanged);
+});
 onBeforeUnmount(() => {
-
-})
-
-function handlePaginatorClick(payload: object) {
-
-}
+    emitter.off('dietTypeSaved', handleListChanged);
+    emitter.off('objectDeleted', handleListChanged);
+});
 
 function handleListChanged() {
+  getDietTypesList(1);
+}
+
+function handlePaginatorClick(payload: object) {
 
 }
 
@@ -44,9 +49,9 @@ function getDietTypesList(page: number) {
             paginate_by: 10
         }
     }).then(function(response){
-        loading.value = false
-        dietTypes.value = response.data.data
-        pagination.value = response.data.links
+        loading.value = false;
+        dietTypes.value = response.data.data;
+        pagination.value = response.data.links;
     })
 }
 
@@ -65,6 +70,16 @@ const breadcrumbs: BreadcrumbItem[] = [
         <div class="p-4">
             <FlashMessage type="success"></FlashMessage>
             <FlashMessage type="error"></FlashMessage>
+            <Modal modal-name="dietType">
+                <template #modal_title>
+                    {{ trans('diet') }}
+                </template>
+                <template #content>
+                    <div>
+                        <DietType :diet-type="state.modals.dietType.objectInModal" />
+                    </div>
+                </template>
+            </Modal>
             <Modal modal-name="objectToDelete">
                 <template #modal_title>
                     {{ trans('delete_record') }}

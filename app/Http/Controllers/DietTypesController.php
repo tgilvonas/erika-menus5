@@ -48,7 +48,7 @@ class DietTypesController
 
         return [
             'result' => 'Success',
-            'message' => __('general.diet').' "'.$request->title.'" '.__('general.saved'),
+            'message' => __('general.diet').' "'.$request->title.'" '.__('general.saved_female'),
             'diet_type_id' => $dietType->id,
         ];
     }
@@ -72,7 +72,7 @@ class DietTypesController
 
         return [
             'result' => 'success',
-            'message' => __('general.diet').' "'.$dietTypeTranslation->translation.'" '.__('general.deleted'),
+            'message' => __('general.diet').' "'.$dietTypeTranslation->translation.'" '.__('general.deleted_female'),
         ];
     }
 }
