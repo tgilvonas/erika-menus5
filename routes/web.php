@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DietTypesController;
 use App\Http\Controllers\IngredientsController;
+use App\Http\Controllers\MealtimesController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -23,6 +24,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/diet-types/json-list', [DietTypesController::class, 'getJsonList'])->name('diet_types.json_list');
     Route::post('/diet-types/save', [DietTypesController::class, 'save'])->name('diet_types.save');
     Route::post('/diet-types/delete', [DietTypesController::class, 'delete'])->name('diet_types.delete');
+
+    Route::get('/mealtimes', [MealtimesController::class, 'index'])->name('mealtimes.index');
+    Route::get('/mealtimes/json-list', [MealtimesController::class, 'getJsonList'])->name('mealtimes.json_list');
+    Route::post('/mealtimes/save', [MealtimesController::class, 'save'])->name('mealtimes.save');
+    Route::post('/mealtimes/delete', [MealtimesController::class, 'delete'])->name('mealtimes.delete');
 });
 
 require __DIR__.'/settings.php';
