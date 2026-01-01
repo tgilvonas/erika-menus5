@@ -60,65 +60,97 @@ const breadcrumbs: BreadcrumbItem[] = [
 </script>
 
 <template>
-  <Head :title="trans('mealtimes')" />
+    <Head :title="trans('mealtimes')" />
 
-  <AppLayout :breadcrumbs="breadcrumbs">
-    <div class="p-4">
-        <FlashMessage type="success"></FlashMessage>
-        <FlashMessage type="error"></FlashMessage>
-        <Modal modal-name="mealtime">
-            <template #modal_title>
-                {{ trans('mealtime') }}
-            </template>
-            <template #content>
-                <div>
-                    <Mealtime :mealtime="state.modals.mealtime.objectInModal" />
-                </div>
-            </template>
-        </Modal>
-      <Modal modal-name="objectToDelete">
-        <template #modal_title>
-          {{ trans('delete_record') }}
-        </template>
-        <template #content>
-          <div>
-            <DeleteDialog :delete-url="route('mealtimes.delete').toString()" />
-          </div>
-        </template>
-      </Modal>
-      <div class="mb-3">
-        <Button @click="state.callModal({modal: 'mealtime', objectInModal: {}})" color="green">
-          {{ trans('create_new') }}
-        </Button>
-      </div>
-      <table class="table-auto border-collapse w-full" v-if="mealtimes.length">
-        <thead>
-        <tr>
-          <th class="border p-2">{{ trans('mealtime') }}</th>
-          <th class="border p-2">{{ trans('from_percent') }}</th>
-          <th class="border p-2">{{ trans('to_percent') }}</th>
-          <th class="border p-2"></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="(mealtime, key) in mealtimes" v-bind:key="key">
-          <td class="border p-2">{{ mealtime.title }}</td>
-          <td class="border p-2 text-right">{{ mealtime.percent_from.toFixed(2) }}</td>
-          <td class="border p-2 text-right">{{ mealtime.percent_to.toFixed(2) }}</td>
-          <td class="border p-2">
-            <Button @click="state.callModal({modal: 'mealtime', objectInModal: mealtime})">
-              {{ trans('edit') }}
-            </Button>
-            <Button @click="state.callModal({modal: 'objectToDelete', objectInModal: mealtime})" color="red">
-              {{ trans('delete') }}
-            </Button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-      <div v-else-if="!loading">
-        {{ trans('no_records') }}
-      </div>
-    </div>
-  </AppLayout>
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="p-4">
+            <FlashMessage type="success" />
+            <FlashMessage type="error" />
+
+            <Modal modal-name="mealtime">
+                <template #modal_title>
+                    {{ trans('mealtime') }}
+                </template>
+
+                <template #content>
+                    <div>
+                        <Mealtime :mealtime="state.modals.mealtime.objectInModal" />
+                    </div>
+                </template>
+            </Modal>
+
+            <Modal modal-name="objectToDelete">
+                <template #modal_title>
+                    {{ trans('delete_record') }}
+                </template>
+
+                <template #content>
+                    <div>
+                        <DeleteDialog :delete-url="route('mealtimes.delete').toString()" />
+                    </div>
+                </template>
+            </Modal>
+
+            <div class="mb-3">
+                <Button
+                    color="green"
+                    @click="state.callModal({ modal: 'mealtime', objectInModal: {} })"
+                >
+                    {{ trans('create_new') }}
+                </Button>
+            </div>
+
+            <table
+                v-if="mealtimes.length"
+                class="table-auto border-collapse w-full"
+            >
+                <thead>
+                <tr>
+                    <th class="border p-2">{{ trans('mealtime') }}</th>
+                    <th class="border p-2">{{ trans('from_percent') }}</th>
+                    <th class="border p-2">{{ trans('to_percent') }}</th>
+                    <th class="border p-2"></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr
+                    v-for="(mealtime, key) in mealtimes"
+                    :key="key"
+                >
+                    <td class="border p-2">
+                        {{ mealtime.title }}
+                    </td>
+
+                    <td class="border p-2 text-right">
+                        {{ mealtime.percent_from.toFixed(2) }}
+                    </td>
+
+                    <td class="border p-2 text-right">
+                        {{ mealtime.percent_to.toFixed(2) }}
+                    </td>
+
+                    <td class="border p-2">
+                        <Button
+                            @click="state.callModal({ modal: 'mealtime', objectInModal: mealtime })"
+                        >
+                            {{ trans('edit') }}
+                        </Button>
+
+                        <Button
+                            color="red"
+                            @click="state.callModal({ modal: 'objectToDelete', objectInModal: mealtime })"
+                        >
+                            {{ trans('delete') }}
+                        </Button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div v-else-if="!loading">
+                {{ trans('no_records') }}
+            </div>
+        </div>
+    </AppLayout>
 </template>
