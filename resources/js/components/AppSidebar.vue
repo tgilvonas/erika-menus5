@@ -39,7 +39,12 @@ const mainNavItems: NavItem[] = [
         title: trans('mealtimes'),
         href: route('mealtimes.index'),
         icon: LayoutGrid,
-    }
+    },
+    {
+        title: trans('eaters'),
+        href: route('eaters.index'),
+        icon: LayoutGrid,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
