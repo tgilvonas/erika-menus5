@@ -5,7 +5,7 @@ namespace App\Repositories;
 
 use App\Models\Eater;
 
-class EaterRepository
+class EatersRepository
 {
     public static function getListWithDietTypes($language, $orderByField='', $orderByDirection='', $searchText='', $paginateBy='')
     {
