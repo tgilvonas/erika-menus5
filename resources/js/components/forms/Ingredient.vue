@@ -67,9 +67,7 @@ function calculateAndValidate() {
 }
 
 function saveIngredient() {
-
     calculateAndValidate()
-
     if (formIsValid.value) {
         state.modals.ingredient.modalContentLoaded = false;
         axios.post(route('ingredients.save'), {

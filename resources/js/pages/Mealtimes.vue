@@ -3,7 +3,6 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import { Input } from '@/components/ui/input';
 import Button from '@/components/Button.vue';
 import Paginator from '@/components/Paginator.vue';
 import Modal from '@/components/Modal.vue';
@@ -15,6 +14,7 @@ import axios from "axios";
 import { route } from 'ziggy-js';
 import emitter from '@/eventBus.js';
 import state from '@/state.js';
+import Mealtime from "@/components/forms/Mealtime.vue";
 
 const mealtimes = ref([]);
 const pagination = ref([]);
@@ -23,9 +23,12 @@ const loading = ref(false);
 
 onMounted(() => {
     getMealtimesList(1);
+    emitter.on('mealtimeSaved', handleListChanged);
+    emitter.on('objectDeleted', handleListChanged);
 });
 onBeforeUnmount(() => {
-
+    emitter.off('mealtimeSaved', handleListChanged);
+    emitter.off('objectDeleted', handleListChanged);
 });
 
 function handleListChanged() {
@@ -61,15 +64,25 @@ const breadcrumbs: BreadcrumbItem[] = [
 
   <AppLayout :breadcrumbs="breadcrumbs">
     <div class="p-4">
-      <FlashMessage type="success"></FlashMessage>
-      <FlashMessage type="error"></FlashMessage>
+        <FlashMessage type="success"></FlashMessage>
+        <FlashMessage type="error"></FlashMessage>
+        <Modal modal-name="mealtime">
+            <template #modal_title>
+                {{ trans('mealtime') }}
+            </template>
+            <template #content>
+                <div>
+                    <Mealtime :mealtime="state.modals.mealtime.objectInModal" />
+                </div>
+            </template>
+        </Modal>
       <Modal modal-name="objectToDelete">
         <template #modal_title>
           {{ trans('delete_record') }}
         </template>
         <template #content>
           <div>
-            <DeleteDialog :delete-url="route('diet_types.delete').toString()" />
+            <DeleteDialog :delete-url="route('mealtimes.delete').toString()" />
           </div>
         </template>
       </Modal>
