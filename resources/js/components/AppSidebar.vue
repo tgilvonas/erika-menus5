@@ -14,7 +14,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
+import { Apple, ChartColumnIncreasing, Clock, LayoutList, User } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { trans } from '@/helpers/translator';
 import { route } from 'ziggy-js';
@@ -23,27 +23,27 @@ const mainNavItems: NavItem[] = [
     {
         title: trans('dashboard'),
         href: dashboard(),
-        icon: LayoutGrid,
+        icon: ChartColumnIncreasing,
     },
     {
         title: trans('ingredients'),
         href: route('ingredients.index'),
-        icon: LayoutGrid,
+        icon: Apple,
     },
     {
         title: trans('diets'),
         href: route('diet_types.index'),
-        icon: LayoutGrid,
+        icon: LayoutList,
     },
     {
         title: trans('mealtimes'),
         href: route('mealtimes.index'),
-        icon: LayoutGrid,
+        icon: Clock,
     },
     {
         title: trans('eaters'),
         href: route('eaters.index'),
-        icon: LayoutGrid,
+        icon: User,
     },
 ];
 

@@ -3,7 +3,6 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import { Input } from '@/components/ui/input';
 import Button from '@/components/Button.vue';
 import Paginator from '@/components/Paginator.vue';
 import Modal from '@/components/Modal.vue';
