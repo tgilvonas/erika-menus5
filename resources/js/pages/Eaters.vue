@@ -14,6 +14,7 @@ import axios from "axios";
 import { route } from 'ziggy-js';
 import emitter from '@/eventBus.js';
 import state from '@/state.js';
+import Eater from "@/components/forms/Eater.vue";
 
 const eaters = ref([]);
 const pagination = ref([]);
@@ -56,6 +57,21 @@ const breadcrumbs: BreadcrumbItem[] = [
         <div class="p-4">
             <FlashMessage type="success"></FlashMessage>
             <FlashMessage type="error"></FlashMessage>
+            <Modal modal-name="eater">
+                <template #modal_title>
+                    {{ trans('eater') }}
+                </template>
+                <template #content>
+                    <div>
+                        <Eater :eater="state.modals.eater.objectInModal" />
+                    </div>
+                </template>
+            </Modal>
+            <div class="mb-3">
+                <Button @click="state.callModal({modal: 'eater', objectInModal: {}})" color="green">
+                    {{ trans('create_new') }}
+                </Button>
+            </div>
             <div v-if="eaters.length">
 
             </div>

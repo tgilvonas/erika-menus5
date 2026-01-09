@@ -110,7 +110,6 @@ function initErrorsObject(): Record<string, string> {
         calories: ''
     }
 }
-
 </script>
 
 <template>
