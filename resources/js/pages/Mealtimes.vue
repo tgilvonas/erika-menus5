@@ -112,7 +112,6 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <th class="border p-2"></th>
                 </tr>
                 </thead>
-
                 <tbody>
                 <tr
                     v-for="(mealtime, key) in mealtimes"
@@ -121,22 +120,18 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <td class="border p-2">
                         {{ mealtime.title }}
                     </td>
-
                     <td class="border p-2 text-right">
                         {{ mealtime.percent_from.toFixed(2) }}
                     </td>
-
                     <td class="border p-2 text-right">
                         {{ mealtime.percent_to.toFixed(2) }}
                     </td>
-
                     <td class="border p-2">
                         <Button
                             @click="state.callModal({ modal: 'mealtime', objectInModal: mealtime })"
                         >
                             {{ trans('edit') }}
                         </Button>
-
                         <Button
                             color="red"
                             @click="state.callModal({ modal: 'objectToDelete', objectInModal: mealtime })"
