@@ -16,6 +16,7 @@ import emitter from '@/eventBus.js';
 import state from '@/state.js';
 import Eater from "@/components/forms/Eater.vue";
 import {Input} from "@/components/ui/input";
+import DietType from "@/components/forms/DietType.vue";
 
 const eaters = ref([]);
 const pagination = ref([]);
@@ -89,6 +90,16 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <template #content>
                     <div>
                         <DeleteDialog :delete-url="route('eaters.delete').toString()" />
+                    </div>
+                </template>
+            </Modal>
+            <Modal modal-name="dietType">
+                <template #modal_title>
+                    {{ trans('diet') }}
+                </template>
+                <template #content>
+                    <div>
+                        <DietType :diet-type="state.modals.dietType.objectInModal" />
                     </div>
                 </template>
             </Modal>

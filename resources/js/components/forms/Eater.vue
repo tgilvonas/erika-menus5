@@ -129,7 +129,23 @@ function getDietTypes() {
             >
               {{ trans('diet') }}
             </label>
-            <VueSelect :options="dietTypesForSelect" v-model="eater.diet_type_id" :placeholder="trans('select')" input-id="diet_type" />
+            <div class="flex items-center gap-3">
+                <div class="flex-1">
+                    <VueSelect
+                        :options="dietTypesForSelect"
+                        v-model="eater.diet_type_id"
+                        :placeholder="trans('select')"
+                        input-id="diet_type"
+                    />
+                </div>
+                <Button
+                    color="green"
+                    @click="state.callModal({ modal: 'dietType', objectInModal: {} })"
+                    class="whitespace-nowrap"
+                >
+                    {{ trans('create_new') }}
+                </Button>
+            </div>
             <div
                 v-if="errors.dietType.length"
                 class="mt-1 text-sm text-red-600"
