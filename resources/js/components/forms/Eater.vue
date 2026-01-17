@@ -8,6 +8,7 @@ import { route } from 'ziggy-js';
 import Input from "@/components/ui/input/Input.vue";
 import VueSelect from "vue3-select-component";
 import "vue3-select-component/styles";
+import emitter from "@/eventBus.js";
 
 const props = defineProps({
     eater: {
@@ -44,14 +45,33 @@ function validateEater() {
     errors.name.push(trans('required'));
     formIsValid.value = false;
   }
+  /*
   if (eater.diet_type_id === null) {
     errors.dietType.push(trans('required'));
     formIsValid.value = false;
   }
+  */
 }
 
 function saveEater() {
-  validateEater();
+    validateEater();
+    if (!formIsValid.value) {
+        return;
+    }
+    axios
+        .post(route('eaters.save'), eater)
+        .then((response) => {
+            state.hideModal({modal: 'eater'});
+            state.flashSuccessMessage({message: response.data.message});
+            eater.id = response.data?.eater?.id;
+            emitter.emit('eaterSaved', {eater});
+        })
+        .catch((error) => {
+            if (error.response?.data?.errors?.name) {
+                errors.name = error.response.data.errors.name;
+            }
+            formIsValid.value = false;
+        });
 }
 
 function getDietTypes() {
