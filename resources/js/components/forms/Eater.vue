@@ -24,11 +24,12 @@ const eater = reactive({
 
 const errors = reactive({
     name: [],
+    dietType: []
 });
 
 const formIsValid = ref(true);
-
-const dietTypes = ref([]);
+const dietTypesForSelect = ref([]);
+const dietTypes = reactive({});
 
 onMounted(() => {
   getDietTypes();
@@ -69,12 +70,12 @@ function getDietTypes() {
                 value: dietType.id,
                 label: dietType.title
             }
-            formattedDietTypes.push(formattedDietType)
+            formattedDietTypes.push(formattedDietType);
+            dietTypes[dietType.id] = dietType;
         })
-        dietTypes.value = formattedDietTypes;
+        dietTypesForSelect.value = formattedDietTypes;
     });
 }
-
 </script>
 
 <template>
@@ -108,7 +109,45 @@ function getDietTypes() {
             >
               {{ trans('diet') }}
             </label>
-            <VueSelect :options="dietTypes" v-model="eater.diet_type_id" :placeholder="trans('select')" input-id="diet_type" />
+            <VueSelect :options="dietTypesForSelect" v-model="eater.diet_type_id" :placeholder="trans('select')" input-id="diet_type" />
+            <div
+                v-if="errors.dietType.length"
+                class="mt-1 text-sm text-red-600"
+            >
+                {{ errors.dietType[0] }}
+            </div>
+
+            <table v-if="eater.diet_type_id !== null && dietTypes[eater.diet_type_id]" class="mt-3 table-auto border-collapse w-full">
+                <thead>
+                    <tr>
+                        <th class="border p-2"></th>
+                        <th class="border p-2 text-right">{{ trans('min') }}</th>
+                        <th class="border p-2 text-right">{{ trans('max') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="border p-2">{{ trans('proteins') }}</td>
+                        <td class="border p-2 text-right">{{ dietTypes[eater.diet_type_id].proteins_min ?? 0 }}</td>
+                        <td class="border p-2 text-right">{{ dietTypes[eater.diet_type_id].proteins_max ?? 0 }}</td>
+                    </tr>
+                    <tr>
+                        <td class="border p-2">{{ trans('fat') }}</td>
+                        <td class="border p-2 text-right">{{ dietTypes[eater.diet_type_id].fat_min ?? 0 }}</td>
+                        <td class="border p-2 text-right">{{ dietTypes[eater.diet_type_id].fat_max ?? 0 }}</td>
+                    </tr>
+                    <tr>
+                        <td class="border p-2">{{ trans('carbohydrates') }}</td>
+                        <td class="border p-2 text-right">{{ dietTypes[eater.diet_type_id].carbohydrates_min ?? 0 }}</td>
+                        <td class="border p-2 text-right">{{ dietTypes[eater.diet_type_id].carbohydrates_max ?? 0 }}</td>
+                    </tr>
+                    <tr>
+                        <td class="border p-2">{{ trans('kilocalories') }}</td>
+                        <td class="border p-2 text-right">{{ dietTypes[eater.diet_type_id].calories_min ?? 0 }}</td>
+                        <td class="border p-2 text-right">{{ dietTypes[eater.diet_type_id].calories_max ?? 0 }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
         <div class="flex justify-end gap-3 pt-4 border-t">
