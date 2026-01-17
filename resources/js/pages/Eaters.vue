@@ -15,6 +15,7 @@ import { route } from 'ziggy-js';
 import emitter from '@/eventBus.js';
 import state from '@/state.js';
 import Eater from "@/components/forms/Eater.vue";
+import {Input} from "@/components/ui/input";
 
 const eaters = ref([]);
 const pagination = ref([]);
@@ -22,8 +23,23 @@ const searchText = ref('');
 const loading = ref(false);
 
 onMounted(() => {
-    getEatersList(1)
+    getEatersList(1);
+    emitter.on('paginatorClicked', handlePaginatorClick);
+    emitter.on('eaterSaved', handleListChanged);
+    emitter.on('objectDeleted', handleListChanged);
 });
+onBeforeUnmount(() => {
+    emitter.off('paginatorClicked', handlePaginatorClick);
+    emitter.off('eaterSaved', handleListChanged);
+    emitter.off('objectDeleted', handleListChanged);
+});
+
+function handlePaginatorClick(payload: object) {
+    getEatersList(payload.page);
+}
+function handleListChanged() {
+    getEatersList(1);
+}
 
 function getEatersList(page: number) {
     loading.value = true;
@@ -48,7 +64,6 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: dashboard().url,
     },
 ];
-
 </script>
 
 <template>
@@ -67,14 +82,61 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </div>
                 </template>
             </Modal>
+            <Modal modal-name="objectToDelete">
+                <template #modal_title>
+                    {{ trans('delete_record') }}
+                </template>
+                <template #content>
+                    <div>
+                        <DeleteDialog :delete-url="route('eaters.delete').toString()" />
+                    </div>
+                </template>
+            </Modal>
             <div class="mb-3">
                 <Button @click="state.callModal({modal: 'eater', objectInModal: {}})" color="green">
                     {{ trans('create_new') }}
                 </Button>
             </div>
-            <div v-if="eaters.length">
-
+            <div class="flex items-center space-x-2 pb-3">
+                <label for="search" class="">
+                    {{ trans('eater')}}:
+                </label>
+                <Input
+                    class="block w-full"
+                    v-model="searchText"
+                    :placeholder="trans('enter_text_for_search')"
+                    @keyup="getEatersList"
+                />
             </div>
+            <table class="table-auto border-collapse w-full" v-if="eaters.length">
+                <thead>
+                    <tr>
+                        <th class="border p-2">
+                            {{ trans('eater') }}
+                        </th>
+                        <th class="border p-2">
+                            {{ trans('diet') }}
+                        </th>
+                        <th class="border p-2">
+
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="eater in eaters">
+                        <td class="border p-2">{{ eater.name }}</td>
+                        <td class="border p-2">{{ eater.diet_type }}</td>
+                        <td class="border p-2">
+                            <Button @click="state.callModal({modal: 'eater', objectInModal: eater})">
+                                {{ trans('edit') }}
+                            </Button>
+                            <Button @click="state.callModal({modal: 'objectToDelete', objectInModal: eater})" color="red">
+                                {{ trans('delete') }}
+                            </Button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
             <div v-else-if="!loading">
                 {{ trans('no_records') }}
             </div>
