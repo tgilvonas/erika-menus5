@@ -56,7 +56,7 @@ function getIngredientsList(page: number) {
         loading.value = false;
         ingredients.value = response.data.data;
         pagination.value = response.data.links;
-    })
+    });
 }
 
 const breadcrumbs: BreadcrumbItem[] = [

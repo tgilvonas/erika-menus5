@@ -1,5 +1,5 @@
 <script setup>
-import {ref, reactive, onMounted} from 'vue';
+import {ref, reactive, onMounted, onBeforeUnmount} from 'vue';
 import { trans } from '@/helpers/translator';
 import Button from '@/components/Button.vue';
 import state from '@/state.js';
@@ -33,7 +33,11 @@ const dietTypesForSelect = ref([]);
 const dietTypes = reactive({});
 
 onMounted(() => {
-  getDietTypes();
+    getDietTypes();
+    emitter.on('dietTypeSaved', onDietTypeSaved);
+});
+onBeforeUnmount(() => {
+    emitter.off('dietTypeSaved', onDietTypeSaved);
 });
 
 function validateEater() {
@@ -58,8 +62,7 @@ function saveEater() {
     if (!formIsValid.value) {
         return;
     }
-    axios
-        .post(route('eaters.save'), eater)
+    axios.post(route('eaters.save'), eater)
         .then((response) => {
             state.hideModal({modal: 'eater'});
             state.flashSuccessMessage({message: response.data.message});
@@ -96,6 +99,12 @@ function getDietTypes() {
         dietTypesForSelect.value = formattedDietTypes;
     });
 }
+
+function onDietTypeSaved({ dietType }) {
+    getDietTypes();
+    eater.diet_type_id = dietType.id;
+}
+
 </script>
 
 <template>
