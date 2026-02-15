@@ -14,7 +14,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { Apple, ChartColumnIncreasing, Clock, LayoutList, User } from 'lucide-vue-next';
+import { Apple, ChartColumnIncreasing, Clock, Salad, LayoutList, User } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { trans } from '@/helpers/translator';
 import { route } from 'ziggy-js';
@@ -44,6 +44,11 @@ const mainNavItems: NavItem[] = [
         title: trans('eaters'),
         href: route('eaters.index'),
         icon: User,
+    },
+    {
+        title: trans('dishes'),
+        href: route('dishes.index'),
+        icon: Salad,
     },
 ];
 

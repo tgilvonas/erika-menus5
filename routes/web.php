@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DietTypesController;
+use App\Http\Controllers\DishesController;
 use App\Http\Controllers\EatersController;
 use App\Http\Controllers\IngredientsController;
 use App\Http\Controllers\MealtimesController;
@@ -35,6 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/eaters/json-list', [EatersController::class, 'getJsonList'])->name('eaters.json_list');
     Route::post('/eaters/save', [EatersController::class, 'save'])->name('eaters.save');
     Route::post('/eaters/delete', [EatersController::class, 'delete'])->name('eaters.delete');
+
+    Route::get('/dishes', [DishesController::class, 'index'])->name('dishes.index');
 });
 
 require __DIR__.'/settings.php';
