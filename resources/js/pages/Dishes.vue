@@ -30,7 +30,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         <div class="p-4">
             <FlashMessage type="success"></FlashMessage>
             <FlashMessage type="error"></FlashMessage>
-            <Modal modal-name="dish">
+            <Modal modal-name="dish" size="lg">
                 <template #modal_title>
                     {{ trans('dish') }}
                 </template>
