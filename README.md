@@ -6,5 +6,6 @@ Installation:
 3. Execute command "php artisan key:generate"
 3. Execute command "php artisan migrate"
 4. Execute command "php artisan db:seed"
-5. Execute command "npm run build"
-6. Log in and enjoy
+5. Execute command "npm install"
+6. Execute command "npm run build"
+7. Log in and enjoy
