@@ -5,6 +5,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import PlaceholderPattern from '../components/PlaceholderPattern.vue';
 import { trans } from '@/helpers/translator';
+import {onMounted} from "vue";
 
 const breadcrumbs: BreadcrumbItem[] = [
     {

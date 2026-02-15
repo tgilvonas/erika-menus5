@@ -45,4 +45,14 @@ class DietTypesRepository
             ->where('diet_types.id', $id)
             ->first();
     }
+
+    public static function getDietTypesStats($lang = 'lt')
+    {
+        return DietType::query()->selectRaw('diet_types.id, diet_types_translations.translation AS title, COUNT(eaters.id)')
+            ->join('diet_types_translations', 'diet_types.id', '=', 'diet_types_translations.diet_types_id')
+            ->join('eaters', 'diet_types.id', '=', 'eaters.diet_type_id')
+            ->where('lang', $lang)
+            ->groupBy(['id', 'title'])
+            ->get();
+    }
 }

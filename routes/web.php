@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DietTypesController;
 use App\Http\Controllers\DishesController;
 use App\Http\Controllers\EatersController;
@@ -12,11 +13,10 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
 
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard/diet-types-stats', [DashboardController::class, 'getDietTypesStats'])->name('dashboard.diet_types_stats');
+
     Route::get('/ingredients', [IngredientsController::class, 'index'])->name('ingredients.index');
     Route::get('/ingredients/json-list', [IngredientsController::class, 'getJsonList'])->name('ingredients.json_list');
     Route::post('/ingredients/save', [IngredientsController::class, 'save'])->name('ingredients.save');
