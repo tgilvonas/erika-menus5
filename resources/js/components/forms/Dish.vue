@@ -15,7 +15,8 @@ const props = defineProps({
     }
 });
 
-const ingredient = reactive({...props.ingredient});
+const dish = reactive({...props.dish});
+const selectedIngredient = reactive({});
 const formIsValid = ref(true);
 
 const errors: Record<string, string> = initErrorsObject();
@@ -34,6 +35,11 @@ function calculateAndValidate() {
 
 // @TODO: implement
 function saveDish() {
+
+}
+
+// @TODO: implement
+function addIngredient() {
 
 }
 
@@ -60,7 +66,7 @@ function saveDish() {
             </div>
             <div class="flex items-center gap-2">
                 <div>Select input should be here</div>
-                <Button color="blue">{{ trans('add_ingredient') }}</Button>
+                <Button color="blue" @click="addIngredient">{{ trans('add_ingredient') }}</Button>
                 <Button color="green" @click="state.callModal({modal: 'ingredient', objectInModal: {}})">{{ trans('create_ingredient') }}</Button>
             </div>
             <div class="mt-8 flex justify-end space-x-3 border-t border-gray-200 dark:border-gray-700 pt-4">
