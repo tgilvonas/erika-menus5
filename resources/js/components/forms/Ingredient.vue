@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { trans } from '@/helpers/translator';
 import {ref, reactive, onMounted} from "vue";
 import state from '@/state.js';
-import axios from "axios";;
+import axios from "axios";
 import { route } from 'ziggy-js';
 import emitter from '@/eventBus.js';
 

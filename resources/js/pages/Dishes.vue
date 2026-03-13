@@ -9,6 +9,8 @@ import {ref} from "vue";
 import state from "@/state";
 import Modal from '@/components/Modal.vue';
 import FlashMessage from "@/components/FlashMessage.vue";
+import Dish from "@/components/forms/Dish.vue";
+import Ingredient from "@/components/forms/Ingredient.vue";
 
 const dishes = ref([]);
 const pagination = ref([]);
@@ -33,6 +35,21 @@ const breadcrumbs: BreadcrumbItem[] = [
             <Modal modal-name="dish" size="lg">
                 <template #modal_title>
                     {{ trans('dish') }}
+                </template>
+                <template #content>
+                    <div>
+                        <Dish :dish="state.modals.dish.objectInModal" />
+                    </div>
+                </template>
+            </Modal>
+            <Modal modal-name="ingredient">
+                <template #modal_title>
+                    {{ trans('ingredient') }}
+                </template>
+                <template #content>
+                    <div>
+                        <Ingredient :ingredient="state.modals.ingredient.objectInModal" />
+                    </div>
                 </template>
             </Modal>
             <div class="mb-3">
