@@ -3,10 +3,13 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class EatersTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_unauthenticated_user_can_not_see_eaters()
     {
         $response = $this->get(route('eaters.index'));
