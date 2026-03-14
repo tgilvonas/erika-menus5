@@ -20,7 +20,7 @@ class DietTypesTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_authenticated_user_can_see_ingredients()
+    public function test_authenticated_user_can_see_diet_types()
     {
         $user = User::factory()->create();
 
