@@ -39,6 +39,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dishes', [DishesController::class, 'index'])->name('dishes.index');
     Route::get('/dishes/json-list', [DishesController::class, 'getJsonList'])->name('dishes.json_list');
+    Route::post('/dishes/save', [DishesController::class, 'save'])->name('dishes.save');
+    Route::post('/dishes/delete', [DishesController::class, 'delete'])->name('dishes.delete');
 });
 
 require __DIR__.'/settings.php';

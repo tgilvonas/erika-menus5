@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import Button from '@/components/Button.vue';
 import { Input } from '@/components/ui/input';
 import { trans } from '@/helpers/translator';
@@ -6,7 +6,9 @@ import state from '@/state.js';
 import axios from "axios";
 import { route } from 'ziggy-js';
 import emitter from '@/eventBus.js';
-import {reactive, ref} from "vue";
+import {reactive, ref, onMounted} from "vue";
+import VueSelect from "vue3-select-component";
+import "vue3-select-component/styles";
 
 const props = defineProps({
     dish: {
@@ -16,15 +18,23 @@ const props = defineProps({
 });
 
 const dish = reactive({...props.dish});
-const selectedIngredient = reactive({});
 const formIsValid = ref(true);
 
-const errors: Record<string, string> = initErrorsObject();
+const selectedIngredientId = reactive({});
+const ingredientsForSelect = ref([]);
+const ingredients = reactive([]);
+
+const errors = initErrorsObject();
+
+onMounted(() => {
+    getIngredients();
+});
 
 // @TODO: implement
-function initErrorsObject(): Record<string, string> {
+function initErrorsObject() {
     return {
         title: '',
+        ingredients: [],
     }
 }
 
@@ -43,6 +53,27 @@ function addIngredient() {
 
 }
 
+function getIngredients() {
+    axios.get(route('ingredients.json_list'), {
+        params: {
+            order_by_field: 'title',
+            order_by_direction: 'asc',
+            search_text: '',
+            paginate_by: null
+        }
+    }).then(function(response){
+        const formattedIngredients = [];
+        response.data.forEach((ingredient) => {
+            const formattedIngredient = {
+                value: ingredient.id,
+                label: ingredient.title
+            }
+            formattedIngredients.push(formattedIngredient);
+            ingredients[ingredient.id] = ingredient;
+        })
+        ingredientsForSelect.value = formattedIngredients;
+    });
+}
 </script>
 
 <template>
@@ -65,7 +96,13 @@ function addIngredient() {
                 </p>
             </div>
             <div class="flex items-center gap-2">
-                <div>Select input should be here</div>
+                <VueSelect
+                    :options="ingredientsForSelect"
+                    v-model="selectedIngredientId"
+                    :placeholder="trans('select')"
+                    input-id="ingredient-to-add"
+                    class="max-w-[750px]"
+                />
                 <Button color="blue" @click="addIngredient">{{ trans('add_ingredient') }}</Button>
                 <Button color="green" @click="state.callModal({modal: 'ingredient', objectInModal: {}})">{{ trans('create_ingredient') }}</Button>
             </div>
