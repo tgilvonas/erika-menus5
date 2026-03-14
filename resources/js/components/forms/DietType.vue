@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import Button from '@/components/Button.vue';
 import { Input } from '@/components/ui/input';
 import { trans } from '@/helpers/translator';

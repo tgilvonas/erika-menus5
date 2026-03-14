@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import { trans } from '@/helpers/translator';
 import {ref, reactive} from "vue";
 import state from '@/state.js';
