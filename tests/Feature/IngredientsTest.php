@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Feature;
+
 use App\Models\User;
 use Database\Seeders\IngredientsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -9,7 +11,7 @@ class IngredientsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_if_unauthenticated_user_can_not_see_ingredients()
+    public function test_unauthenticated_user_can_not_see_ingredients()
     {
         $response = $this->get(route('ingredients.index'));
         $response->assertRedirect(route('login'));
@@ -18,7 +20,7 @@ class IngredientsTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_if_authenticated_user_can_see_ingredients()
+    public function test_authenticated_user_can_see_ingredients()
     {
         $user = User::factory()->create();
 
