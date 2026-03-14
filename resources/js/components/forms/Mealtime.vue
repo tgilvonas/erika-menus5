@@ -32,12 +32,12 @@ function validateMealtime() {
         errors[errorList] = [];
     }
     for (let property of mealtimeFields) {
-        if (property != 'id') {
-            if (property != 'title' && isNaN(mealtime[property])) {
+        if (property !== 'id') {
+            if (property !== 'title' && isNaN(mealtime[property])) {
                 formIsValid.value = false;
                 errors[property].push(trans('must_be_numeric'));
             }
-            if (typeof mealtime[property] == "undefined" || mealtime[property].length == 0) {
+            if (typeof mealtime[property] == "undefined" || mealtime[property].length === 0) {
                 formIsValid.value = false;
                 errors[property].push(trans('required'));
             }
