@@ -6,7 +6,8 @@ import state from '@/state.js';
 import axios from "axios";
 import { route } from 'ziggy-js';
 import emitter from '@/eventBus.js';
-import {reactive, ref, onMounted} from "vue";
+import {reactive, ref, onMounted, computed} from "vue";
+import draggable from 'vuedraggable';
 import VueSelect from "vue3-select-component";
 import "vue3-select-component/styles";
 
@@ -17,12 +18,15 @@ const props = defineProps({
     }
 });
 
-const dish = reactive({...props.dish});
+const dish = reactive({
+    title: '',
+    ingredients: [],
+});
 const formIsValid = ref(true);
 
-const selectedIngredientId = reactive({});
+let selectedIngredientId = ref(null);
 const ingredientsForSelect = ref([]);
-const ingredients = reactive([]);
+const ingredients = ref([]);
 
 const errors = initErrorsObject();
 
@@ -39,11 +43,6 @@ function initErrorsObject() {
 }
 
 // @TODO: implement
-function calculateAndValidate() {
-
-}
-
-// @TODO: implement
 function saveDish() {
 
 }
@@ -52,6 +51,55 @@ function saveDish() {
 function addIngredient() {
 
 }
+
+function removeIngredient(index) {
+    dish.ingredients.splice(index, 1)
+}
+
+function format(num, digits = 3) {
+    if (num === null || num === undefined || isNaN(num)) return '0.000'
+    return Number(num).toFixed(digits)
+}
+
+// calculations
+function calc(value, weight) {
+    return format(value * weight)
+}
+
+function validate() {
+    
+}
+
+// totals
+const totals = computed(() => {
+    let proteins = 0
+    let fat = 0
+    let carbohydrates = 0
+    let calories = 0
+    let brutto = 0
+    let netto = 0
+
+    dish.ingredients.forEach(i => {
+        const nettoVal = Number(i.mass_netto) || 0
+        const bruttoVal = Number(i.mass_brutto) || 0
+
+        brutto += bruttoVal
+        netto += nettoVal
+        proteins += i.proteins * nettoVal
+        fat += i.fat * nettoVal
+        carbohydrates += i.carbohydrates * nettoVal
+        calories += i.calories * nettoVal
+    })
+
+    return {
+        mass_brutto: format(brutto),
+        mass_netto: format(netto),
+        proteins: format(proteins),
+        fat: format(fat),
+        carbohydrates: format(carbohydrates),
+        calories: format(calories)
+    }
+})
 
 function getIngredients() {
     axios.get(route('ingredients.json_list'), {
@@ -87,7 +135,7 @@ function getIngredients() {
                     id="dish_title"
                     type="text"
                     v-model="dish.title"
-                    @keyup="calculateAndValidate"
+                    @keyup="validate"
                     :placeholder="trans('title')"
                     class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 focus:border-teal-500 focus:ring-teal-500"
                 />
@@ -95,6 +143,63 @@ function getIngredients() {
                     {{ errors.title }}
                 </p>
             </div>
+
+            <div class="space-y-2">
+
+                <div class="grid grid-cols-8 gap-2 bg-gray-400 text-gray-900 font-semibold p-3 rounded" v-if="dish.ingredients.length">
+                    <div>{{ trans('ingredient') }}</div>
+                    <div>{{ trans('mass_brutto') }}</div>
+                    <div>{{ trans('yield') }}</div>
+                    <div>{{ trans('proteins') }}</div>
+                    <div>{{ trans('fat') }}</div>
+                    <div>{{ trans('carbohydrates') }}</div>
+                    <div>{{ trans('kilocalories') }}</div>
+                    <div></div>
+                </div>
+
+                <draggable
+                    v-model="dish.ingredients"
+                    item-key="id"
+                    handle=".drag-handle"
+                    animation="200"
+                >
+                    <template #item="{ element, index }">
+                        <div class="grid grid-cols-8 gap-2 items-center bg-gray-200 p-3 rounded">
+
+                            <!-- drag handle -->
+                            <div class="flex items-center gap-2">
+                                <span class="drag-handle cursor-move text-gray-500">☰</span>
+                                <span class="font-medium">{{ element.title }}</span>
+                            </div>
+
+                            <input type="number" v-model="element.mass_brutto" class="input w-full rounded border px-2 py-1 text-sm" />
+                            <input type="number" v-model="element.mass_netto" class="input w-full rounded border px-2 py-1 text-sm" />
+
+                            <div>{{ calc(element.proteins, element.mass_netto) }}</div>
+                            <div>{{ calc(element.fat, element.mass_netto) }}</div>
+                            <div>{{ calc(element.carbsohydrates, element.mass_netto) }}</div>
+                            <div>{{ calc(element.calories, element.mass_netto) }}</div>
+
+                            <div class="flex justify-end">
+                                <button @click="removeIngredient(index)" class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">✕</button>
+                            </div>
+                        </div>
+                    </template>
+                </draggable>
+
+                <!-- TOTAL -->
+                <div class="grid grid-cols-8 gap-2 bg-gray-500 text-white font-bold p-3 rounded" v-if="dish.ingredients.length">
+                    <div>Total:</div>
+                    <div>{{ totals.mass_brutto }}</div>
+                    <div>{{ totals.mass_netto }}</div>
+                    <div>{{ totals.proteins }}</div>
+                    <div>{{ totals.fat }}</div>
+                    <div>{{ totals.carbohydrates }}</div>
+                    <div>{{ totals.calories }}</div>
+                    <div></div>
+                </div>
+            </div>
+
             <div class="flex items-center gap-2">
                 <VueSelect
                     :options="ingredientsForSelect"
@@ -102,6 +207,7 @@ function getIngredients() {
                     :placeholder="trans('select')"
                     input-id="ingredient-to-add"
                     class="max-w-[750px]"
+                    @option-selected="console.log(selectedIngredientId)"
                 />
                 <Button color="blue" @click="addIngredient">{{ trans('add_ingredient') }}</Button>
                 <Button color="green" @click="state.callModal({modal: 'ingredient', objectInModal: {}})">{{ trans('create_ingredient') }}</Button>
