@@ -24,9 +24,9 @@ const dish = reactive({
 });
 const formIsValid = ref(true);
 
-let selectedIngredientId = ref(null);
+const selectedIngredientId = ref(null);
 const ingredientsForSelect = ref([]);
-const ingredients = ref([]);
+const ingredientsMap = reactive({});
 
 const errors = initErrorsObject();
 
@@ -67,7 +67,7 @@ function calc(value, weight) {
 }
 
 function validate() {
-    
+
 }
 
 // totals
@@ -109,16 +109,15 @@ function getIngredients() {
             search_text: '',
             paginate_by: null
         }
-    }).then(function(response){
+    }).then((response) => {
         const formattedIngredients = [];
         response.data.forEach((ingredient) => {
-            const formattedIngredient = {
-                value: ingredient.id,
+            formattedIngredients.push({
+                value: Number(ingredient.id),
                 label: ingredient.title
-            }
-            formattedIngredients.push(formattedIngredient);
-            ingredients[ingredient.id] = ingredient;
-        })
+            });
+            ingredientsMap[ingredient.id] = ingredient;
+        });
         ingredientsForSelect.value = formattedIngredients;
     });
 }
@@ -204,10 +203,12 @@ function getIngredients() {
                 <VueSelect
                     :options="ingredientsForSelect"
                     v-model="selectedIngredientId"
+                    label="label"
+                    value-prop="value"
                     :placeholder="trans('select')"
                     input-id="ingredient-to-add"
                     class="max-w-[750px]"
-                    @option-selected="console.log(selectedIngredientId)"
+                    @option-selected="(option) => console.log('option:', option)"
                 />
                 <Button color="blue" @click="addIngredient">{{ trans('add_ingredient') }}</Button>
                 <Button color="green" @click="state.callModal({modal: 'ingredient', objectInModal: {}})">{{ trans('create_ingredient') }}</Button>
