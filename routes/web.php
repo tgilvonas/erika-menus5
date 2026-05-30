@@ -19,6 +19,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/ingredients', [IngredientsController::class, 'index'])->name('ingredients.index');
     Route::get('/ingredients/json-list', [IngredientsController::class, 'getJsonList'])->name('ingredients.json_list');
+    Route::get('/ingredients/{id}', [IngredientsController::class, 'getIngredient'])->name('ingredients.get_ingredient');
     Route::post('/ingredients/save', [IngredientsController::class, 'save'])->name('ingredients.save');
     Route::post('/ingredients/delete', [IngredientsController::class, 'delete'])->name('ingredients.delete');
 

@@ -7,6 +7,7 @@ use App\Models\Ingredient;
 use App\Models\IngredientTranslation;
 use App\Repositories\IngredientsRepository;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -26,6 +27,11 @@ class IngredientsController
             request('search_text'),
             request('paginate_by')
         );
+    }
+
+    public function getIngredient(Request $request, $id)
+    {
+        return IngredientsRepository::getIngredientWithTranslation($id);
     }
 
     public function save(IngredientRequest $request)

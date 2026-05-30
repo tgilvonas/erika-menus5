@@ -49,7 +49,13 @@ function saveDish() {
 
 // @TODO: implement
 function addIngredient() {
-
+    axios.get(
+        route('ingredients.get_ingredient', {
+            id: selectedIngredientId.value
+        })
+    ).then((response) => {
+        dish.ingredients.push(response.data);
+    });
 }
 
 function removeIngredient(index) {
@@ -163,7 +169,7 @@ function getIngredients() {
                     animation="200"
                 >
                     <template #item="{ element, index }">
-                        <div class="grid grid-cols-8 gap-2 items-center bg-gray-200 p-3 rounded">
+                        <div class="grid grid-cols-8 gap-2 items-center bg-gray-200 p-3 rounded text-gray-500">
 
                             <!-- drag handle -->
                             <div class="flex items-center gap-2">
@@ -208,7 +214,6 @@ function getIngredients() {
                     :placeholder="trans('select')"
                     input-id="ingredient-to-add"
                     class="max-w-[750px]"
-                    @option-selected="(option) => console.log('option:', option)"
                 />
                 <Button color="blue" @click="addIngredient">{{ trans('add_ingredient') }}</Button>
                 <Button color="green" @click="state.callModal({modal: 'ingredient', objectInModal: {}})">{{ trans('create_ingredient') }}</Button>
