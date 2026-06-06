@@ -28,13 +28,12 @@ const selectedIngredientId = ref(null);
 const ingredientsForSelect = ref([]);
 const ingredientsMap = reactive({});
 
-const errors = initErrorsObject();
+let errors = initErrorsObject();
 
 onMounted(() => {
     getIngredients();
 });
 
-// @TODO: implement
 function initErrorsObject() {
     return {
         title: '',
@@ -42,12 +41,41 @@ function initErrorsObject() {
     }
 }
 
-// @TODO: implement
 function saveDish() {
 
+    validate();
+    if (formIsValid.value === false) {
+        return;
+    }
+
+    axios.post(route('dishes.save'), {
+        id: dish.id ?? null,
+        dish_title: dish.title,
+        ingredients: dish.ingredients
+    }).then((response) => {
+
+        state.flashSuccessMessage({
+            message: response.data.message
+        });
+
+        state.hideModal({
+            modal: 'dish'
+        });
+
+        emitter.emit('dishSaved', {
+            dish: response.data.dish
+        });
+    }).catch((error) => {
+        console.error(error);
+        if (error.response?.data?.errors) {
+            errors.value = error.response.data.errors;
+        }
+        state.flashErrorMessage({
+            message: trans('something_went_wrong')
+        });
+    });
 }
 
-// @TODO: implement
 function addIngredient() {
     axios.get(
         route('ingredients.get_ingredient', {
@@ -59,21 +87,26 @@ function addIngredient() {
 }
 
 function removeIngredient(index) {
-    dish.ingredients.splice(index, 1)
+    dish.ingredients.splice(index, 1);
 }
 
 function format(num, digits = 3) {
-    if (num === null || num === undefined || isNaN(num)) return '0.000'
-    return Number(num).toFixed(digits)
+    if (num === null || num === undefined || isNaN(num)) return '0.000';
+    return Number(num).toFixed(digits);
 }
 
 // calculations
 function calc(value, weight) {
-    return format(value * weight)
+    return format(value * weight);
 }
 
 function validate() {
-
+    formIsValid.value = true;
+    errors = initErrorsObject();
+    if (dish.title.length === 0) {
+        errors.title = trans('ingredient_title_is_required');
+        formIsValid.value = false;
+    }
 }
 
 // totals
@@ -182,7 +215,7 @@ function getIngredients() {
 
                             <div>{{ calc(element.proteins, element.mass_netto) }}</div>
                             <div>{{ calc(element.fat, element.mass_netto) }}</div>
-                            <div>{{ calc(element.carbsohydrates, element.mass_netto) }}</div>
+                            <div>{{ calc(element.carbohydrates, element.mass_netto) }}</div>
                             <div>{{ calc(element.calories, element.mass_netto) }}</div>
 
                             <div class="flex justify-end">
@@ -192,9 +225,8 @@ function getIngredients() {
                     </template>
                 </draggable>
 
-                <!-- TOTAL -->
                 <div class="grid grid-cols-8 gap-2 bg-gray-500 text-white font-bold p-3 rounded" v-if="dish.ingredients.length">
-                    <div>Total:</div>
+                    <div>{{ trans('total') }}:</div>
                     <div>{{ totals.mass_brutto }}</div>
                     <div>{{ totals.mass_netto }}</div>
                     <div>{{ totals.proteins }}</div>
