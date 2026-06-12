@@ -111,10 +111,10 @@ function getDishesList(page) {
                 <tbody>
                 <tr v-for="(dish, key) in dishes" v-bind:key="key">
                     <td class="border p-2">{{ dish.title }}</td>
-                    <td class="border p-2 text-right">{{ dish.proteins.toFixed(3) }}</td>
-                    <td class="border p-2 text-right">{{ dish.fat.toFixed(3) }}</td>
-                    <td class="border p-2 text-right">{{ dish.carbohydrates.toFixed(3) }}</td>
-                    <td class="border p-2 text-right">{{ dish.calories.toFixed(3) }}</td>
+                    <td class="border p-2 text-right">{{ dish.proteins_total.toFixed(3) }}</td>
+                    <td class="border p-2 text-right">{{ dish.fat_total.toFixed(3) }}</td>
+                    <td class="border p-2 text-right">{{ dish.carbohydrates_total.toFixed(3) }}</td>
+                    <td class="border p-2 text-right">{{ dish.calories_total.toFixed(3) }}</td>
                     <td class="border p-2">
                         <Button @click="state.callModal({modal: 'dish', objectInModal: dish})">
                             {{ trans('edit') }}

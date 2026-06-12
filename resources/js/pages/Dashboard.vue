@@ -55,7 +55,7 @@ const loadStats = async () => {
                 datasets: [
                     {
                         data: data.map((item) => item.eaters_count),
-                        backgroundColor: ['#22c55e', '#f59e0b', '#3b82f6', '#ec4899', '#8b5cf6', '#f97316'],
+                        backgroundColor: ['#22c55e', '#f59e0b', '#3b82f6', '#ec4899', '#8b5cf6', '#f97316', '#10b981', '#6366f1', '#f43f5e', '#3d4451'],
                         borderColor: '#ffffff',
                         borderWidth: 1,
                     },

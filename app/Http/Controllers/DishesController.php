@@ -18,7 +18,7 @@ class DishesController
 
     public function getJsonList()
     {
-        DishesRepository::getList(
+        return DishesRepository::getList(
             request('paginate_by'),
             request('search_text'),
         );
