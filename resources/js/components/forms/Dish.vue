@@ -19,6 +19,7 @@ const props = defineProps({
 });
 
 const dish = reactive({
+    id: null,
     title: '',
     ingredients: [],
 });
@@ -31,6 +32,12 @@ const ingredientsMap = reactive({});
 let errors = initErrorsObject();
 
 onMounted(() => {
+    if (typeof props.dish.id !== 'undefined') {
+        axios.get(route('dishes.edit', {id: props.dish.id})).then((response) => {
+            dish.title = response.data.translation.translation;
+            dish.ingredients = response.data.ingredients;
+        })
+    }
     getIngredients();
 });
 
@@ -53,15 +60,12 @@ function saveDish() {
         dish_title: dish.title,
         ingredients: dish.ingredients
     }).then((response) => {
-
         state.flashSuccessMessage({
             message: response.data.message
         });
-
         state.hideModal({
             modal: 'dish'
         });
-
         emitter.emit('dishSaved', {
             dish: response.data.dish
         });

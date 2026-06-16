@@ -28,21 +28,18 @@ class DishesController
     {
         if (is_numeric($id)) {
             $ingredients = Dish::getIngredients($id);
-            $dishId = $id;
             $dishTranslation = DishTranslation::query()->where('dish_id', $id)
                 ->where('lang', 'lt') // temporarily
                 ->first();
         } else {
             $ingredients = [];
-            $dishId = '';
             $dishTranslation = new DishTranslation();
         }
 
-        return view('dishes.edit', [
+        return [
             'ingredients' => $ingredients,
-            'dishId' => $dishId,
-            'dishTranslation' => $dishTranslation,
-        ]);
+            'translation' => $dishTranslation,
+        ];
     }
 
     public function save(Request $request)

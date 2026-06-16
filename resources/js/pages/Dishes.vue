@@ -7,6 +7,7 @@ import {trans} from "@/helpers/translator";
 import Button from '@/components/Button.vue';
 import {ref, onMounted, onBeforeUnmount} from "vue";
 import state from "@/state";
+import Paginator from '@/components/Paginator.vue';
 import Modal from '@/components/Modal.vue';
 import FlashMessage from "@/components/FlashMessage.vue";
 import Dish from "@/components/forms/Dish.vue";
@@ -14,6 +15,7 @@ import Ingredient from "@/components/forms/Ingredient.vue";
 import emitter from '@/eventBus.js';
 import axios from "axios";
 import {route} from "ziggy-js";
+import {Input} from "@/components/ui/input";
 
 const dishes = ref([]);
 const pagination = ref([]);
@@ -47,7 +49,6 @@ function handleListChanged() {
     getDishesList(1);
 }
 
-//@TODO: implement
 function getDishesList(page) {
     loading.value = true;
     axios.get(route('dishes.json_list'), {
@@ -97,6 +98,17 @@ function getDishesList(page) {
                     {{ trans('create_new') }}
                 </Button>
             </div>
+            <div class="flex items-center space-x-2 pb-3">
+                <label for="search" class="">
+                    {{ trans('dish')}}:
+                </label>
+                <Input
+                    class="block w-full"
+                    v-model="searchText"
+                    :placeholder="trans('enter_text_for_search')"
+                    @keyup="getDishesList"
+                />
+            </div>
             <table class="table-auto border-collapse w-full" v-if="dishes.length">
                 <thead>
                 <tr>
@@ -128,6 +140,9 @@ function getDishesList(page) {
             </table>
             <div v-else-if="!loading">
                 {{ trans('no_records') }}
+            </div>
+            <div class="">
+                <Paginator :pagination="pagination" />
             </div>
         </div>
     </AppLayout>
