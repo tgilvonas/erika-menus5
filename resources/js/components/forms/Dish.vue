@@ -34,6 +34,7 @@ let errors = initErrorsObject();
 onMounted(() => {
     if (typeof props.dish.id !== 'undefined') {
         axios.get(route('dishes.edit', {id: props.dish.id})).then((response) => {
+            dish.id = props.dish.id;
             dish.title = response.data.translation.translation;
             dish.ingredients = response.data.ingredients;
         })
@@ -56,7 +57,7 @@ function saveDish() {
     }
 
     axios.post(route('dishes.save'), {
-        id: dish.id ?? null,
+        dish_id: dish.id ?? null,
         dish_title: dish.title,
         ingredients: dish.ingredients
     }).then((response) => {

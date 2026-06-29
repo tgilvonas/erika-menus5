@@ -16,6 +16,7 @@ import emitter from '@/eventBus.js';
 import axios from "axios";
 import {route} from "ziggy-js";
 import {Input} from "@/components/ui/input";
+import DeleteDialog from "@/components/DeleteDialog.vue";
 
 const dishes = ref([]);
 const pagination = ref([]);
@@ -90,6 +91,16 @@ function getDishesList(page) {
                 <template #content>
                     <div>
                         <Ingredient :ingredient="state.modals.ingredient.objectInModal" />
+                    </div>
+                </template>
+            </Modal>
+            <Modal modal-name="objectToDelete">
+                <template #modal_title>
+                    {{ trans('delete_record') }}
+                </template>
+                <template #content>
+                    <div>
+                        <DeleteDialog :delete-url="route('dishes.delete').toString()" />
                     </div>
                 </template>
             </Modal>
