@@ -12,6 +12,18 @@ import PlaceholderPattern from '../components/PlaceholderPattern.vue';
 
 Chart.register(PieController, ArcElement, Tooltip, Legend);
 
+const defaultColors = ['#22c55e', '#f59e0b', '#3b82f6', '#ec4899', '#8b5cf6', '#f97316', '#10b981', '#6366f1', '#f43f5e', '#3d4451'];
+
+const randomHexColor = () => `#${Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0')}`;
+
+const getBackgroundColors = (count: number) => {
+    const colors = [...defaultColors];
+    while (colors.length < count) {
+        colors.push(randomHexColor());
+    }
+    return colors.slice(0, count);
+};
+
 interface DietTypeStat {
     id: number;
     title: string;
@@ -50,17 +62,17 @@ const loadStats = async () => {
         chart.value?.destroy();
         chart.value = new Chart(chartCanvas.value, {
             type: 'pie',
-            data: {
-                labels: data.map((item) => item.title),
-                datasets: [
-                    {
-                        data: data.map((item) => item.eaters_count),
-                        backgroundColor: ['#22c55e', '#f59e0b', '#3b82f6', '#ec4899', '#8b5cf6', '#f97316', '#10b981', '#6366f1', '#f43f5e', '#3d4451'],
-                        borderColor: '#ffffff',
-                        borderWidth: 1,
+                    data: {
+                        labels: data.map((item) => item.title),
+                        datasets: [
+                            {
+                                data: data.map((item) => item.eaters_count),
+                                backgroundColor: getBackgroundColors(data.length),
+                                borderColor: '#ffffff',
+                                borderWidth: 1,
+                            },
+                        ],
                     },
-                ],
-            },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
