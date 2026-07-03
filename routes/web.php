@@ -16,6 +16,7 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
     Route::get('/dashboard/diet-types-stats', [DashboardController::class, 'getDietTypesStats'])->name('dashboard.diet_types_stats');
+    Route::get('/dashboard/ingredients-usage-stats', [DashboardController::class, 'getIngredientsUsageStats'])->name('dashboard.ingredients_usage_stats');
 
     Route::get('/ingredients', [IngredientsController::class, 'index'])->name('ingredients.index');
     Route::get('/ingredients/json-list', [IngredientsController::class, 'getJsonList'])->name('ingredients.json_list');
