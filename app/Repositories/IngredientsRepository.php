@@ -39,4 +39,17 @@ class IngredientsRepository
             ->where('ingredients.id', $id)
             ->first();
     }
+
+    public static function getTop10UsedIngredients($language='lt')
+    {
+        return Ingredient::query()
+            ->selectRaw('ingredients.id, ingredients_translations.translation AS title, count(dishes_ingredients.ingredient_id) AS usage_count')
+            ->join('ingredients_translations', 'ingredients.id', '=', 'ingredients_translations.ingredient_id')
+            ->join('dishes_ingredients', 'ingredients.id', '=', 'dishes_ingredients.ingredient_id')
+            ->where('lang', $language)
+            ->groupBy('ingredients.id', 'title')
+            ->orderBy('usage_count', 'desc')
+            ->limit(10)
+            ->get();
+    }
 }
