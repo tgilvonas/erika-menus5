@@ -30,6 +30,11 @@ interface DietTypeStat {
     eaters_count: number;
 }
 
+interface IngredientsUsageStat {
+    label: string;
+    value: number;
+}
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: trans('dashboard'),
@@ -42,6 +47,12 @@ const chart = ref<Chart<'pie'> | null>(null);
 const stats = ref<DietTypeStat[]>([]);
 const isLoading = ref(true);
 const errorMessage = ref('');
+
+const ingredientsChartCanvas = ref<HTMLCanvasElement | null>(null);
+const ingredientsChart = ref<Chart<'pie'> | null>(null);
+const ingredientsStats = ref<IngredientsUsageStat[]>([]);
+const ingredientsIsLoading = ref(true);
+const ingredientsErrorMessage = ref('');
 
 const loadStats = async () => {
     isLoading.value = true;
@@ -99,12 +110,70 @@ const loadStats = async () => {
     }
 };
 
+const loadIngredientsUsageStats = async () => {
+    ingredientsIsLoading.value = true;
+    ingredientsErrorMessage.value = '';
+
+    try {
+        const response = await axios.get<IngredientsUsageStat[]>(route('dashboard.ingredients_usage_stats'));
+
+        const data = response.data;
+        ingredientsStats.value = data;
+
+        await nextTick();
+
+        if (!ingredientsChartCanvas.value) {
+            return;
+        }
+
+        ingredientsChart.value?.destroy();
+        ingredientsChart.value = new Chart(ingredientsChartCanvas.value, {
+            type: 'pie',
+            data: {
+                labels: data.map((item) => item.label),
+                datasets: [
+                    {
+                        data: data.map((item) => item.value),
+                        backgroundColor: getBackgroundColors(data.length),
+                        borderColor: '#ffffff',
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label(context) {
+                                const value = context.parsed;
+                                return `${context.label}: ${value}`;
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unexpected error.';
+        ingredientsErrorMessage.value = message;
+    } finally {
+        ingredientsIsLoading.value = false;
+    }
+};
+
 onMounted(() => {
     void loadStats();
+    void loadIngredientsUsageStats();
 });
 
 onBeforeUnmount(() => {
     chart.value?.destroy();
+    ingredientsChart.value?.destroy();
 });
 </script>
 
@@ -124,7 +193,6 @@ onBeforeUnmount(() => {
                             <p class="text-sm font-semibold text-sidebar-foreground">{{ trans('eaters_by_diet_type') }}</p>
                         </div>
                     </div>
-
                     <div class="h-[80%] w-full">
                         <canvas v-if="stats.length" ref="chartCanvas" class="h-full w-full"></canvas>
                         <div v-else class="flex h-full items-center justify-center rounded-lg border border-dashed border-sidebar-border/80 text-sm text-muted-foreground">
@@ -135,9 +203,21 @@ onBeforeUnmount(() => {
                     </div>
                 </div>
                 <div
-                    class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
+                    class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border"
                 >
-                    <PlaceholderPattern />
+                    <div class="mb-3 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-semibold text-sidebar-foreground">{{ trans('ingredients_usage_stats') }}</p>
+                        </div>
+                    </div>
+                    <div class="h-[80%] w-full">
+                        <canvas v-if="ingredientsStats.length" ref="ingredientsChartCanvas" class="h-full w-full"></canvas>
+                        <div v-else class="flex h-full items-center justify-center rounded-lg border border-dashed border-sidebar-border/80 text-sm text-muted-foreground">
+                            <span v-if="ingredientsIsLoading">Loading chart…</span>
+                            <span v-else-if="ingredientsErrorMessage">{{ ingredientsErrorMessage }}</span>
+                            <span v-else>No ingredient usage data available.</span>
+                        </div>
+                    </div>
                 </div>
                 <div
                     class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
