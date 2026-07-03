@@ -37,8 +37,14 @@ class DashboardController extends Controller
         $unusedIngredientsCount = Ingredient::query()->whereNotIn('id', $idsOfIngredients)->get()->count();
 
         return [
-            'used' => $usedIngredientsCount,
-            'unused' => $unusedIngredientsCount,
+            [
+                'label' => __('general.used'),
+                'value' => $usedIngredientsCount,
+            ],
+            [
+                'label' => __('general.unused'),
+                'value' => $unusedIngredientsCount,
+            ]
         ];
     }
 }

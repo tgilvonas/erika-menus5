@@ -114,4 +114,7 @@ return [
     'delete_record' => 'Įrašo trynimas',
     'is_assigned_to_eater_impossible_to_delete' => ' yra susieta su valgytoju, jos ištrinti negalima',
     'eaters_by_diet_type' => 'Valgytojai pagal dietos tipą',
+    'used' => 'Naudojama',
+    'unused' => 'Nenaudojama',
+    'ingredients_usage_stats' => 'Ingredientų naudojimo statistika',
 ];

@@ -113,4 +113,7 @@ return [
     'delete_record' => 'Delete record?',
     'is_assigned_to_eater_impossible_to_delete' => ' is assigned to eater, so it is impossible to delete',
     'eaters_by_diet_type' => 'Eaters by diet type',
+    'used' => 'Used',
+    'unused' => 'Unused',
+    'ingredients_usage_stats' => 'Ingredients usage stats',
 ];
