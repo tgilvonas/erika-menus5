@@ -6,7 +6,7 @@ import state from '@/state.js';
 import axios from "axios";
 import { route } from 'ziggy-js';
 import emitter from '@/eventBus.js';
-import {reactive, ref, onMounted, computed} from "vue";
+import {reactive, ref, onMounted, computed, onBeforeUnmount} from "vue";
 import draggable from 'vuedraggable';
 import VueSelect from "vue3-select-component";
 import "vue3-select-component/styles";
@@ -40,7 +40,39 @@ onMounted(() => {
         })
     }
     getIngredients();
+    emitter.on('ingredientSaved', handleIngredientSaved);
 });
+
+onBeforeUnmount(() => {
+    emitter.off('ingredientSaved', handleIngredientSaved);
+});
+
+function handleIngredientSaved(payload) {
+    const createdIngredient = payload?.ingredient;
+
+    if (!createdIngredient?.id) {
+        return;
+    }
+
+    const ingredientId = Number(createdIngredient.id);
+
+    if (!ingredientsForSelect.value.some((item) => Number(item.value) === ingredientId)) {
+        ingredientsForSelect.value.push({
+            value: ingredientId,
+            label: createdIngredient.title
+        });
+    }
+
+    ingredientsMap[ingredientId] = createdIngredient;
+    selectedIngredientId.value = ingredientId;
+
+    const alreadyAdded = dish.ingredients.some((item) => Number(item.id) === ingredientId);
+    if (!alreadyAdded) {
+        dish.ingredients.push({
+            ...createdIngredient
+        });
+    }
+}
 
 function initErrorsObject() {
     return {
