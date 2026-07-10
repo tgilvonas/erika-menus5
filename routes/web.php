@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DaysController;
 use App\Http\Controllers\DietTypesController;
 use App\Http\Controllers\DishesController;
 use App\Http\Controllers\EatersController;
@@ -44,6 +45,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/dishes/edit/{id}', [DishesController::class, 'edit'])->name('dishes.edit');
     Route::post('/dishes/save', [DishesController::class, 'save'])->name('dishes.save');
     Route::post('/dishes/delete', [DishesController::class, 'delete'])->name('dishes.delete');
+
+    Route::get('/days', [DaysController::class, 'index'])->name('days.index');
 });
 
 require __DIR__.'/settings.php';
