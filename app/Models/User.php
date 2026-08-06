@@ -10,6 +10,9 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 
 class User extends Authenticatable
 {
+    public const ROLE_SUPERADMIN = 'ROLE_SUPERADMIN';
+    public const ROLE_DIETOLOGIST = 'ROLE_DIETOLOGIST';
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
@@ -22,6 +25,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'roles',
     ];
 
     /**
@@ -35,6 +39,14 @@ class User extends Authenticatable
     ];
 
     /**
+     * Determine if the current user is a superadmin.
+     */
+    public function isSuperadmin(): bool
+    {
+        return $this->roles === self::ROLE_SUPERADMIN;
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -44,6 +56,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'roles' => 'string',
         ];
     }
 }

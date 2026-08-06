@@ -1,5 +1,12 @@
 import { reactive } from 'vue';
 
+const createModalState = (zIndex = 5000) => ({
+    zIndex,
+    show: false,
+    objectInModal: null,
+    modalContentLoaded: false,
+});
+
 const modals= reactive({
     day: {
         zIndex: 3100,
@@ -38,6 +45,7 @@ const modals= reactive({
         objectInModal: null,
         modalContentLoaded: false
     },
+    user: createModalState(3700),
     objectToDelete: {
         zIndex: 5000,
         show: false,
@@ -62,10 +70,16 @@ export default {
     messages: messages,
     savedObject: reactive({}),
     callModal (data) {
+        if (!modals[data.modal]) {
+            modals[data.modal] = createModalState();
+        }
         modals[data.modal]['show'] = true;
         modals[data.modal]['objectInModal'] = data.objectInModal;
     },
     hideModal (data) {
+        if (!modals[data.modal]) {
+            modals[data.modal] = createModalState();
+        }
         modals[data.modal]['show'] = false;
         modals[data.modal]['modalContentLoaded'] = false;
         modals[data.modal]['objectInModal'] = false;

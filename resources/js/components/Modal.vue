@@ -1,8 +1,8 @@
 <template>
     <div
-        v-if="state.modals[modalName].show"
+        v-if="modalState?.show"
         class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-        :style="{ zIndex: state.modals[modalName].zIndex }"
+        :style="{ zIndex: modalState?.zIndex ?? 0 }"
     >
         <div
             :class="[
@@ -44,6 +44,8 @@ const props = defineProps({
         validator: (v) => ['sm', 'lg'].includes(v),
     },
 });
+
+const modalState = computed(() => state.modals[props.modalName] ?? null);
 
 const sizeClass = computed(() => {
     return props.size === 'lg'

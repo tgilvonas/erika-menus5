@@ -7,6 +7,7 @@ use App\Http\Controllers\DishesController;
 use App\Http\Controllers\EatersController;
 use App\Http\Controllers\IngredientsController;
 use App\Http\Controllers\MealtimesController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -47,6 +48,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/dishes/delete', [DishesController::class, 'delete'])->name('dishes.delete');
 
     Route::get('/days', [DaysController::class, 'index'])->name('days.index');
+
+    Route::middleware('superadmin')->group(function () {
+        Route::get('/users', [UsersController::class, 'index'])->name('users.index');
+        Route::get('/users/json-list', [UsersController::class, 'getJsonList'])->name('users.json_list');
+        Route::post('/users/save', [UsersController::class, 'save'])->name('users.save');
+        Route::post('/users/delete', [UsersController::class, 'delete'])->name('users.delete');
+    });
 });
 
 require __DIR__.'/settings.php';
