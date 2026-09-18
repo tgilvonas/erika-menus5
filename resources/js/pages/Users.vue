@@ -129,7 +129,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <tr v-for="user in users" :key="user.id">
                         <td class="border p-2">{{ user.name }}</td>
                         <td class="border p-2">{{ user.email }}</td>
-                        <td class="border p-2">{{ user.roles }}</td>
+                        <td class="border p-2">{{ trans(user.roles) }}</td>
                         <td class="border p-2">
                             <Button @click="state.callModal({ modal: 'user', objectInModal: user })">
                                 {{ trans('edit') }}

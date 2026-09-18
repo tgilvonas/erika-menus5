@@ -124,4 +124,6 @@ return [
     'used' => 'Naudojama',
     'unused' => 'Nenaudojama',
     'ingredients_usage_stats' => 'Ingredientų naudojimo statistika',
+    'ROLE_DIETOLOGIST' => 'Dietologas',
+    'ROLE_SUPERADMIN' => 'Superadministratorius',
 ];

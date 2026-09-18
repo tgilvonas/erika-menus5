@@ -24,7 +24,7 @@ class UserRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', $emailRule],
             'roles' => ['required', 'string', Rule::in(['ROLE_SUPERADMIN', 'ROLE_DIETOLOGIST'])],
-            'password' => [is_numeric($this->id) ? 'nullable' : 'required', 'string', 'min:8'],
+            'password' => [is_numeric($this->id) ? 'nullable' : 'required', 'string', 'min:8', 'confirmed'],
         ];
     }
 
@@ -39,6 +39,7 @@ class UserRequest extends FormRequest
             'roles.in' => __('general.required'),
             'password.required' => __('general.required'),
             'password.min' => __('general.password_strength_description'),
+            'password.confirmed' => __('validation.confirmed'),
         ];
     }
 }

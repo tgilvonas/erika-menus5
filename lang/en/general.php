@@ -123,4 +123,6 @@ return [
     'used' => 'Used',
     'unused' => 'Unused',
     'ingredients_usage_stats' => 'Ingredients usage stats',
+    'ROLE_DIETOLOGIST' => 'Dietologist',
+    'ROLE_SUPERADMIN' => 'Superadmin',
 ];

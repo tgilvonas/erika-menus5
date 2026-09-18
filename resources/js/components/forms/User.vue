@@ -21,6 +21,7 @@ const user = reactive({
     email: props.user.email ?? '',
     roles: props.user.roles ?? 'ROLE_DIETOLOGIST',
     password: '',
+    password_confirmation: '',
 });
 
 watch(
@@ -31,15 +32,17 @@ watch(
         user.email = next?.email ?? '';
         user.roles = next?.roles ?? 'ROLE_DIETOLOGIST';
         user.password = '';
+        user.password_confirmation = '';
     },
     { immediate: true, deep: true }
 );
 
-const errors = reactive({
+const errors = reactive<Record<string, string[]>>({
     name: [],
     email: [],
     roles: [],
     password: [],
+    password_confirmation: [],
 });
 
 const formIsValid = ref(true);
@@ -54,6 +57,7 @@ function validateUser() {
     errors.email = [];
     errors.roles = [];
     errors.password = [];
+    errors.password_confirmation = [];
 
     if (!user.name) {
         errors.name.push(trans('required'));
@@ -68,6 +72,26 @@ function validateUser() {
     if (!user.roles) {
         errors.roles.push(trans('required'));
         formIsValid.value = false;
+    }
+
+    const passwordProvided = !!user.password || !!user.password_confirmation;
+
+    if (passwordProvided) {
+        if (!user.password) {
+            errors.password.push(trans('required'));
+            formIsValid.value = false;
+        }
+
+        if (!user.password_confirmation) {
+            errors.password_confirmation.push(trans('required'));
+            formIsValid.value = false;
+        }
+
+        if (user.password && user.password_confirmation && user.password !== user.password_confirmation) {
+            errors.password.push(trans('confirm_password'));
+            errors.password_confirmation.push(trans('confirm_password'));
+            formIsValid.value = false;
+        }
     }
 
     if (!user.id && !user.password) {
@@ -89,6 +113,7 @@ function saveUser() {
         email: user.email,
         roles: user.roles,
         password: user.password,
+        password_confirmation: user.password_confirmation,
     };
 
     axios.post(route('users.save'), payload)
@@ -172,6 +197,20 @@ function saveUser() {
             />
             <div v-if="errors.password.length" class="mt-1 text-sm text-red-600">
                 {{ errors.password[0] }}
+            </div>
+
+            <label for="password_confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mt-3 mb-1">
+                {{ trans('confirm_password') }}
+            </label>
+            <Input
+                id="password_confirmation"
+                type="password"
+                v-model="user.password_confirmation"
+                @keyup="validateUser"
+                class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            />
+            <div v-if="errors.password_confirmation.length" class="mt-1 text-sm text-red-600">
+                {{ errors.password_confirmation[0] }}
             </div>
         </div>
 
