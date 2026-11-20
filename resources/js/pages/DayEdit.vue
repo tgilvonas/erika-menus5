@@ -19,6 +19,8 @@ import { onMounted, onBeforeUnmount, ref, computed } from 'vue';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { enUS, lt } from 'date-fns/locale';
+import VueSelect from 'vue3-select-component';
+import 'vue3-select-component/dist/styles.css';
 
 const props = defineProps<{
     day: any;
@@ -159,6 +161,19 @@ function updateDate(value: Date | null) {
     date.value = formatDate(value);
 }
 
+const eaterOptions = computed(() => selectedEaters.value.map((eater) => ({
+    value: String(eater.id),
+    label: eater.name,
+})));
+
+function updateEater(value: unknown) {
+    if (Array.isArray(value)) {
+        eaterId.value = value.length ? String(value[0]) : '';
+    } else {
+        eaterId.value = value === null || value === undefined ? '' : String(value);
+    }
+}
+
 onMounted(() => {
     getDishes();
     getMealtimes();
@@ -222,10 +237,15 @@ onBeforeUnmount(() => {
                     <div>
                         <label class="mb-1 block text-sm font-medium" for="day_eater">{{ trans('eater') }}</label>
                         <div class="flex gap-2">
-                            <select id="day_eater" v-model="eaterId" required class="flex-1 rounded border px-3 py-2">
-                                <option value="">{{ trans('select') }}</option>
-                                <option v-for="eater in selectedEaters" :key="eater.id" :value="eater.id">{{ eater.name }}</option>
-                            </select>
+                            <VueSelect
+                                :options="eaterOptions"
+                                :model-value="eaterId ? String(eaterId) : null"
+                                :placeholder="trans('select')"
+                                :is-clearable="false"
+                                input-id="day_eater"
+                                @update:model-value="updateEater"
+                                class="flex-1"
+                            />
                             <Button type="button" color="green" @click="state.callModal({ modal: 'eater', objectInModal: {} })">+</Button>
                         </div>
                     </div>
