@@ -8,8 +8,11 @@ import Button from '@/components/Button.vue';
 import FlashMessage from '@/components/FlashMessage.vue';
 import axios from 'axios';
 import { route } from 'ziggy-js';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import state from '@/state.js';
+import { VueDatePicker } from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
+import { enUS, lt } from 'date-fns/locale';
 
 const props = defineProps<{
     days: any;
@@ -20,6 +23,38 @@ const props = defineProps<{
 const eaterId = ref(props.filters?.eater_id ?? '');
 const dateFrom = ref(props.filters?.date_from ?? '');
 const dateTo = ref(props.filters?.date_to ?? '');
+
+const dateFromModel = ref<Date | null>(parseIsoDate(dateFrom.value));
+const dateToModel = ref<Date | null>(parseIsoDate(dateTo.value));
+const calendarLocale = computed(() =>
+    document.documentElement.lang.toLowerCase().startsWith('lt') ? lt : enUS
+);
+
+function parseIsoDate(value: string): Date | null {
+    if (!value) return null;
+    const [year, month, day] = value.split('-').map(Number);
+    return year && month && day ? new Date(year, month - 1, day) : null;
+}
+
+function formatDate(value: Date | null): string {
+    if (!value) return '';
+    const year = value.getFullYear();
+    const month = String(value.getMonth() + 1).padStart(2, '0');
+    const day = String(value.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function updateDateFrom(value: Date | null) {
+    dateFromModel.value = value;
+    dateFrom.value = formatDate(value);
+    applyFilters();
+}
+
+function updateDateTo(value: Date | null) {
+    dateToModel.value = value;
+    dateTo.value = formatDate(value);
+    applyFilters();
+}
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: trans('days'), href: dashboard().url },
@@ -83,11 +118,28 @@ onMounted(() => {
                 </div>
                 <div>
                     <label class="mb-1 block text-sm font-medium">{{ trans('date_from') }}</label>
-                    <input lang="lt" type="date" v-model="dateFrom" class="w-full rounded border px-3 py-2" @change="applyFilters" />
+                    <VueDatePicker
+                        :model-value="dateFromModel"
+                        :locale="calendarLocale"
+                        :teleport="true"
+                        format="yyyy-MM-dd"
+                        auto-apply
+                        :enable-time-picker="false"
+                        @update:model-value="updateDateFrom"
+                        class="w-full rounded border px-3 py-2"
+                    />
                 </div>
                 <div>
                     <label class="mb-1 block text-sm font-medium">{{ trans('date_to') }}</label>
-                    <input lang="lt" type="date" v-model="dateTo" class="w-full rounded border px-3 py-2" @change="applyFilters" />
+                    <VueDatePicker
+                        :model-value="dateToModel"
+                        :locale="calendarLocale"
+                        :teleport="true"
+                        format="yyyy-MM-dd"
+                        auto-apply
+                        :enable-time-picker="false"
+                        @update:model-value="updateDateTo"
+                    />
                 </div>
             </div>
 

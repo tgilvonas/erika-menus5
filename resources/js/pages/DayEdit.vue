@@ -15,7 +15,10 @@ import state from '@/state.js';
 import emitter from '@/eventBus.js';
 import axios from 'axios';
 import { route } from 'ziggy-js';
-import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { onMounted, onBeforeUnmount, ref, computed } from 'vue';
+import { VueDatePicker } from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
+import { enUS, lt } from 'date-fns/locale';
 
 const props = defineProps<{
     day: any;
@@ -32,6 +35,10 @@ const availableMealtimes = ref([...props.mealtimes]);
 const dishes = ref<any[]>([]);
 const selectedMealtimeId = ref<number | ''>('');
 const selectedDishId = ref<number | ''>('');
+const dateModel = ref<Date | null>(parseIsoDate(date.value));
+const calendarLocale = computed(() =>
+    document.documentElement.lang.toLowerCase().startsWith('lt') ? lt : enUS
+);
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: trans('days'), href: dashboard().url },
@@ -133,6 +140,25 @@ function saveDay() {
     });
 }
 
+function parseIsoDate(value: string): Date | null {
+    if (!value) return null;
+    const [year, month, day] = value.split('-').map(Number);
+    return year && month && day ? new Date(year, month - 1, day) : null;
+}
+
+function formatDate(value: Date | null): string {
+    if (!value) return '';
+    const year = value.getFullYear();
+    const month = String(value.getMonth() + 1).padStart(2, '0');
+    const day = String(value.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function updateDate(value: Date | null) {
+    dateModel.value = value;
+    date.value = formatDate(value);
+}
+
 onMounted(() => {
     getDishes();
     getMealtimes();
@@ -157,30 +183,41 @@ onBeforeUnmount(() => {
         <div class="p-4">
             <Modal modal-name="eater">
                 <template #modal_title>{{ trans('eater') }}</template>
-                <template #content><Eater :eater="state.modals.eater.objectInModal" /></template>
+                <template #content><Eater :eater="state.modals.eater.objectInModal ?? {}" /></template>
             </Modal>
             <Modal modal-name="dietType">
                 <template #modal_title>{{ trans('diet') }}</template>
-                <template #content><DietType :diet-type="state.modals.dietType.objectInModal" /></template>
+                <template #content><DietType :diet-type="state.modals.dietType.objectInModal ?? {}" /></template>
             </Modal>
             <Modal modal-name="mealtime">
                 <template #modal_title>{{ trans('mealtime') }}</template>
-                <template #content><Mealtime :mealtime="state.modals.mealtime.objectInModal" /></template>
+                <template #content><Mealtime :mealtime="state.modals.mealtime.objectInModal ?? {}" /></template>
             </Modal>
             <Modal modal-name="dish" size="lg">
                 <template #modal_title>{{ trans('dish') }}</template>
-                <template #content><Dish :dish="state.modals.dish.objectInModal" /></template>
+                <template #content><Dish :dish="state.modals.dish.objectInModal ?? {}" /></template>
             </Modal>
             <Modal modal-name="ingredient">
                 <template #modal_title>{{ trans('ingredient') }}</template>
-                <template #content><Ingredient :ingredient="state.modals.ingredient.objectInModal" /></template>
+                <template #content><Ingredient :ingredient="state.modals.ingredient.objectInModal ?? {}" /></template>
             </Modal>
 
             <form class="space-y-6" @submit.prevent="saveDay">
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
                         <label class="mb-1 block text-sm font-medium" for="day_date">{{ trans('day') }}</label>
-                        <input id="day_date" lang="lt" type="date" v-model="date" required class="w-full rounded border px-3 py-2" />
+                        <VueDatePicker
+                            id="day_date"
+                            :model-value="dateModel"
+                            :locale="calendarLocale"
+                            :teleport="true"
+                            format="yyyy-MM-dd"
+                            auto-apply
+                            required
+                            :enable-time-picker="false"
+                            @update:model-value="updateDate"
+                            class="w-full rounded border px-3 py-2"
+                        />
                     </div>
                     <div>
                         <label class="mb-1 block text-sm font-medium" for="day_eater">{{ trans('eater') }}</label>
@@ -234,7 +271,7 @@ onBeforeUnmount(() => {
                             <tr v-for="(dish, dishIndex) in mealtime.dishes" :key="dish.id">
                                 <td class="border p-2">{{ dish.title }}</td>
                                 <td class="w-24 border p-2 text-right">
-                                    <Button type="button" color="red" @click="removeDish(mealtimeIndex, dishIndex)">{{ trans('delete') }}</Button>
+                                    <Button type="button" color="red" @click="removeDish(mealtimeIndex, Number(dishIndex))">{{ trans('delete') }}</Button>
                                 </td>
                             </tr>
                         </tbody>
