@@ -158,6 +158,7 @@ onMounted(() => {
                         auto-apply
                         :enable-time-picker="false"
                         @update:model-value="updateDateTo"
+                        class="w-full rounded border px-3 py-2"
                     />
                 </div>
             </div>

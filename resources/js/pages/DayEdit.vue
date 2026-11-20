@@ -231,7 +231,7 @@ onBeforeUnmount(() => {
                             required
                             :enable-time-picker="false"
                             @update:model-value="updateDate"
-                            class="w-full rounded border px-3 py-2"
+                            class="w-full rounded"
                         />
                     </div>
                     <div>
