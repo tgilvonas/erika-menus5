@@ -13,6 +13,8 @@ import state from '@/state.js';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { enUS, lt } from 'date-fns/locale';
+import VueSelect from 'vue3-select-component';
+import 'vue3-select-component/dist/styles.css';
 
 const props = defineProps<{
     days: any;
@@ -84,6 +86,20 @@ function exportPdf(day: any) {
     window.open(route('days.export_pdf', { id: day.id }), '_blank');
 }
 
+const eaterOptions = computed(() => props.eaters.map((eater) => ({
+    value: String(eater.id),
+    label: eater.name,
+})));
+
+function updateEaterFilter(value: unknown) {
+    if (Array.isArray(value)) {
+        eaterId.value = value.length ? String(value[0]) : '';
+    } else {
+        eaterId.value = value === null || value === undefined ? '' : String(value);
+    }
+    applyFilters();
+}
+
 onMounted(() => {
     const flashMessage = (usePage().props as any).flash?.message;
     if (flashMessage) {
@@ -109,12 +125,15 @@ onMounted(() => {
             <div class="mb-4 grid grid-cols-1 gap-3 md:grid-cols-4">
                 <div>
                     <label class="mb-1 block text-sm font-medium">{{ trans('eater') }}</label>
-                    <select v-model="eaterId" class="w-full rounded border px-3 py-2" @change="applyFilters">
-                        <option value="">{{ trans('select') }}</option>
-                        <option v-for="eater in props.eaters" :key="eater.id" :value="String(eater.id)">
-                            {{ eater.name }}
-                        </option>
-                    </select>
+                    <VueSelect
+                        :options="eaterOptions"
+                        :model-value="eaterId || null"
+                        :placeholder="trans('select')"
+                        :is-clearable="true"
+                        input-id="eater-filter"
+                        @update:model-value="updateEaterFilter"
+                        class="w-full rounded border px-3 py-2"
+                    />
                 </div>
                 <div>
                     <label class="mb-1 block text-sm font-medium">{{ trans('date_from') }}</label>
