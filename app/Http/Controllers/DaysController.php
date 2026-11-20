@@ -24,12 +24,45 @@ class DaysController extends Controller
     {
         $day = Day::getDayWithAllRelations($id);
 
-        return Inertia::render('Days/Edit', [
+        return Inertia::render('DayEdit', [
             'day' => $day,
             'eaters' => Eater::query()->orderBy('name', 'asc')->get(),
             'dietTypes' => DietType::query()->orderBy('name', 'asc')->get(),
             'mealtimes' => Mealtime::query()->orderBy('time', 'asc')->get(),
         ]);
+    }
+
+    public function save(Request $request)
+    {
+        $day = Day::query()->findOrNew($request->get('day_id', 'new'));
+
+        $day->date = $request->get('date');
+        $day->eater_id = $request->get('eater_id');
+        $day->save();
+
+        DB::table('days_mealtimes')->where('day_id', $day->id)->delete();
+        DB::table('dishes_mealtimes')->where('day_id', $day->id)->delete();
+        foreach ($request->mealtimes as $mealtime) {
+            DB::table('days_mealtimes')->insert([
+                'day_id' => $day->id,
+                'mealtime_id' => $mealtime['id'],
+            ]);
+            if (isset($mealtime['dishes'])) {
+                foreach ($mealtime['dishes'] as $dish) {
+                    DB::table('dishes_mealtimes')->insert([
+                        'day_id' => $day->id,
+                        'dish_id' => $dish['id'],
+                        'mealtime_id' => $mealtime['id'],
+                    ]);
+                }
+            }
+        }
+
+        session()->flash('message', __('general.day') .' "' . $day->date->format('Y-m-d') . '" '. __('general.saved_female'));
+
+        return [
+            'result' => 'success',
+        ];
     }
 
     public function delete()
