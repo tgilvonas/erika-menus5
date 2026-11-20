@@ -49,6 +49,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/days', [DaysController::class, 'index'])->name('days.index');
     Route::get('/days/{id}/edit', [DaysController::class, 'edit'])->name('days.edit');
+    Route::post('/days/save', [DaysController::class, 'save'])->name('days.save');
+    Route::post('/days/delete', [DaysController::class, 'delete'])->name('days.delete');
     Route::get('/days/{id}/export-pdf', [DaysController::class, 'exportPdf'])->name('days.export_pdf');
 
     Route::middleware('superadmin')->group(function () {
