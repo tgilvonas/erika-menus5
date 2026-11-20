@@ -20,6 +20,18 @@ class DaysController extends Controller
         ]);
     }
 
+    public function edit($id)
+    {
+        $day = Day::getDayWithAllRelations($id);
+
+        return Inertia::render('Days/Edit', [
+            'day' => $day,
+            'eaters' => Eater::query()->orderBy('name', 'asc')->get(),
+            'dietTypes' => DietType::query()->orderBy('name', 'asc')->get(),
+            'mealtimes' => Mealtime::query()->orderBy('time', 'asc')->get(),
+        ]);
+    }
+
     public function delete()
     {
         $day = Day::query()->find(request('id'));
@@ -34,5 +46,22 @@ class DaysController extends Controller
             'result' => 'success',
             'message' => $successMessage
         ];
+    }
+
+    public function exportPdf($id)
+    {
+        $day = Day::getDayWithAllRelations($id);
+
+        abort_if($day === null, 404);
+
+        $day->append('sum_nutrition_values');
+
+        $date = $day->date instanceof \Carbon\Carbon
+            ? $day->date->format('Y-m-d')
+            : (string) $day->date;
+
+        $pdf = Pdf::loadView('day_pdf', ['day' => $day]);
+
+        return $pdf->stream("day-{$date}.pdf");
     }
 }

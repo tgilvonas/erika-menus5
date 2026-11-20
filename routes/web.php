@@ -48,6 +48,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/dishes/delete', [DishesController::class, 'delete'])->name('dishes.delete');
 
     Route::get('/days', [DaysController::class, 'index'])->name('days.index');
+    Route::get('/days/{id}/edit', [DaysController::class, 'edit'])->name('days.edit');
+    Route::get('/days/{id}/export-pdf', [DaysController::class, 'exportPdf'])->name('days.export_pdf');
 
     Route::middleware('superadmin')->group(function () {
         Route::get('/users', [UsersController::class, 'index'])->name('users.index');
