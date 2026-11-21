@@ -166,6 +166,39 @@ const eaterOptions = computed(() => selectedEaters.value.map((eater) => ({
     label: eater.name,
 })));
 
+const mealtimeOptions = computed(() => availableMealtimes.value.map((mealtime) => ({
+    value: Number(mealtime.id),
+    label: mealtimeTitle(mealtime),
+})));
+
+const dishOptions = computed(() => dishes.value.map((dish) => ({
+    value: Number(dish.id),
+    label: dishTitle(dish),
+})));
+
+function normalizeSelectedValue(value: unknown): number | '' {
+    if (Array.isArray(value)) {
+        return normalizeSelectedValue(value.length ? value[0] : '');
+    }
+
+    if (value && typeof value === 'object') {
+        const option = value as { value?: unknown; id?: unknown };
+        value = option.value ?? option.id;
+    }
+
+    if (value === null || value === undefined || value === '') return '';
+    const id = Number(value);
+    return Number.isFinite(id) ? id : '';
+}
+
+function updateSelectedMealtime(value: unknown) {
+    selectedMealtimeId.value = normalizeSelectedValue(value);
+}
+
+function updateSelectedDish(value: unknown) {
+    selectedDishId.value = normalizeSelectedValue(value);
+}
+
 function updateEater(value: unknown) {
     if (Array.isArray(value)) {
         eaterId.value = value.length ? String(value[0]) : '';
@@ -254,17 +287,23 @@ onBeforeUnmount(() => {
                 <div class="flex flex-wrap gap-2">
                     <Button type="button" @click="state.callModal({ modal: 'mealtime', objectInModal: {} })">{{ trans('create_mealtime') }}</Button>
                     <Button type="button" @click="state.callModal({ modal: 'dish', objectInModal: {} })">{{ trans('create_dish') }}</Button>
-                    <Button type="button" @click="state.callModal({ modal: 'ingredient', objectInModal: {} })">{{ trans('create_ingredient') }}</Button>
                     <Button type="button" @click="state.callModal({ modal: 'dietType', objectInModal: {} })">{{ trans('create_diet') }}</Button>
                 </div>
 
                 <div class="flex items-end gap-2">
                     <div class="flex-1">
                         <label class="mb-1 block text-sm font-medium">{{ trans('mealtime') }}</label>
-                        <select v-model="selectedMealtimeId" class="w-full rounded border px-3 py-2">
-                            <option value="">{{ trans('select') }}</option>
-                            <option v-for="mealtime in availableMealtimes" :key="mealtime.id" :value="mealtime.id">{{ mealtimeTitle(mealtime) }}</option>
-                        </select>
+                        <VueSelect
+                            :options="mealtimeOptions"
+                            :model-value="selectedMealtimeId || null"
+                            :placeholder="trans('select')"
+                            :is-clearable="true"
+                            label="label"
+                            value-prop="value"
+                            input-id="day-mealtime"
+                            @update:model-value="updateSelectedMealtime"
+                            class="w-full"
+                        />
                     </div>
                     <Button type="button" color="green" @click="addMealtime">{{ trans('add_mealtime') }}</Button>
                 </div>
@@ -278,10 +317,17 @@ onBeforeUnmount(() => {
                     <div class="mb-3 flex items-end gap-2">
                         <div class="flex-1">
                             <label class="mb-1 block text-sm font-medium">{{ trans('dish') }}</label>
-                            <select v-model="selectedDishId" class="w-full rounded border px-3 py-2">
-                                <option value="">{{ trans('select') }}</option>
-                                <option v-for="dish in dishes" :key="dish.id" :value="dish.id">{{ dishTitle(dish) }}</option>
-                            </select>
+                            <VueSelect
+                                :options="dishOptions"
+                                :model-value="selectedDishId || null"
+                                :placeholder="trans('select')"
+                                :is-clearable="true"
+                                label="label"
+                                value-prop="value"
+                                :input-id="`day-dish-${mealtime.id}`"
+                                @update:model-value="updateSelectedDish"
+                                class="w-full"
+                            />
                         </div>
                         <Button type="button" color="green" @click="addDish(mealtimeIndex)">{{ trans('add_dish') }}</Button>
                     </div>
