@@ -6,15 +6,18 @@ import { Head, router, usePage } from '@inertiajs/vue3';
 import { trans } from '@/helpers/translator';
 import Button from '@/components/Button.vue';
 import FlashMessage from '@/components/FlashMessage.vue';
-import axios from 'axios';
+import Modal from '@/components/Modal.vue';
+import DeleteDialog from '@/components/DeleteDialog.vue';
+import emitter from '@/eventBus.js';
 import { route } from 'ziggy-js';
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
 import state from '@/state.js';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { enUS, lt } from 'date-fns/locale';
 import VueSelect from 'vue3-select-component';
 import 'vue3-select-component/dist/styles.css';
+import axios from 'axios';
 
 const props = defineProps<{
     days: any;
@@ -75,10 +78,12 @@ function goToPage(url: string | null) {
 }
 
 function deleteDay(day: any) {
-    if (!confirm(trans('are_you_sure_you_want_to_delete_this_record'))) return;
-
-    axios.post(route('days.delete'), { id: day.id }).then(() => {
-        router.reload();
+    state.callModal({
+        modal: 'objectToDelete',
+        objectInModal: {
+            ...day,
+            title: `${day.date} ${day.eater_name}`,
+        },
     });
 }
 
@@ -109,11 +114,20 @@ function clearFilters() {
     applyFilters();
 }
 
+function handleObjectDeleted() {
+    router.reload();
+}
+
 onMounted(() => {
     const flashMessage = (usePage().props as any).flash?.message;
     if (flashMessage) {
         state.flashSuccessMessage({ message: flashMessage });
     }
+    emitter.on('objectDeleted', handleObjectDeleted);
+});
+
+onBeforeUnmount(() => {
+    emitter.off('objectDeleted', handleObjectDeleted);
 });
 </script>
 
@@ -210,5 +224,16 @@ onMounted(() => {
                 />
             </nav>
         </div>
+
+        <Modal modal-name="objectToDelete">
+            <template #modal_title>
+                {{ trans('delete_record') }}
+            </template>
+            <template #content>
+                <div>
+                    <DeleteDialog :delete-url="route('days.delete').toString()" />
+                </div>
+            </template>
+        </Modal>
     </AppLayout>
 </template>
