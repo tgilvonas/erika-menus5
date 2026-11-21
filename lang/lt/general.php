@@ -127,4 +127,9 @@ return [
     'ROLE_DIETOLOGIST' => 'Dietologas',
     'ROLE_SUPERADMIN' => 'Superadministratorius',
     'clear_filters' => 'Išvalyti filtrus',
+    'nutrition' => 'Mityba',
+    'actual' => 'Faktiškai',
+    'status' => 'Statusas',
+    'nutrition_matches' => 'Mityba atitinka dietą',
+    'nutrition_does_not_match' => 'Mityba neatitinka dietos',
 ];

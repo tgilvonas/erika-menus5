@@ -126,4 +126,9 @@ return [
     'ROLE_DIETOLOGIST' => 'Dietologist',
     'ROLE_SUPERADMIN' => 'Superadmin',
     'clear_filters' => 'Clear filters',
+    'nutrition' => 'Nutrition',
+    'actual' => 'Actual',
+    'status' => 'Status',
+    'nutrition_matches' => 'Nutrition matches diet',
+    'nutrition_does_not_match' => 'Nutrition does not match diet',
 ];

@@ -270,6 +270,42 @@ function syncDishNutrition() {
     });
 }
 
+const dayNutrition = computed(() => mealtimes.value.reduce((totals: any, mealtime: any) => {
+    const nutrition = mealtimeNutrition(mealtime);
+    totals.proteins += nutrition.proteins;
+    totals.fat += nutrition.fat;
+    totals.carbohydrates += nutrition.carbohydrates;
+    totals.calories += nutrition.calories;
+    return totals;
+}, { proteins: 0, fat: 0, carbohydrates: 0, calories: 0 }));
+
+const assignedEater = computed(() => selectedEaters.value.find((eater) =>
+    String(eater.id) === String(eaterId.value)
+));
+
+const assignedDiet = computed(() => {
+    const dietTypeId = assignedEater.value?.diet_type_id;
+    if (!dietTypeId) return null;
+    return props.dietTypes.find((dietType) => Number(dietType.id) === Number(dietTypeId)) ?? null;
+});
+
+function nutritionMatches(minKey: string, maxKey: string, actual: number) {
+    if (!assignedDiet.value) return null;
+    const min = Number(assignedDiet.value[minKey] ?? 0);
+    const max = Number(assignedDiet.value[maxKey] ?? 0);
+    return actual >= min && actual <= max;
+}
+
+const allNutritionMatches = computed(() => {
+    if (!assignedDiet.value) return null;
+    return Boolean(
+        nutritionMatches('proteins_min', 'proteins_max', dayNutrition.value.proteins)
+        && nutritionMatches('fat_min', 'fat_max', dayNutrition.value.fat)
+        && nutritionMatches('carbohydrates_min', 'carbohydrates_max', dayNutrition.value.carbohydrates)
+        && nutritionMatches('calories_min', 'calories_max', dayNutrition.value.calories)
+    );
+});
+
 onMounted(() => {
     getDishes();
     getMealtimes();
@@ -428,6 +464,88 @@ onBeforeUnmount(() => {
                                 <td class="border p-2"></td>
                             </tr>
                         </tfoot>
+                    </table>
+                </div>
+
+                <div class="rounded border p-4">
+                    <div class="mb-3 flex items-center justify-between">
+                        <h2 class="text-lg font-semibold">{{ trans('total') }}</h2>
+                        <span
+                            v-if="allNutritionMatches !== null"
+                            class="rounded px-3 py-1 text-sm font-semibold"
+                            :class="allNutritionMatches ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'"
+                        >
+                            {{ allNutritionMatches ? trans('nutrition_matches') : trans('nutrition_does_not_match') }}
+                        </span>
+                    </div>
+
+                    <table v-if="assignedDiet" class="mb-3 w-full table-auto border-collapse">
+                        <thead>
+                            <tr>
+                                <th class="border p-2 text-left">{{ trans('nutrition') }}</th>
+                                <th class="border p-2 text-right">{{ trans('actual') }}</th>
+                                <th class="border p-2 text-right">{{ trans('min') }}</th>
+                                <th class="border p-2 text-right">{{ trans('max') }}</th>
+                                <th class="border p-2 text-center">{{ trans('status') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border p-2">{{ trans('proteins') }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(dayNutrition.proteins) }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(assignedDiet.proteins_min) }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(assignedDiet.proteins_max) }}</td>
+                                <td class="border p-2 text-center" :class="nutritionMatches('proteins_min', 'proteins_max', dayNutrition.proteins) ? 'text-green-700' : 'text-red-700'">
+                                    {{ nutritionMatches('proteins_min', 'proteins_max', dayNutrition.proteins) ? '✓' : '✕' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="border p-2">{{ trans('fat') }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(dayNutrition.fat) }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(assignedDiet.fat_min) }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(assignedDiet.fat_max) }}</td>
+                                <td class="border p-2 text-center" :class="nutritionMatches('fat_min', 'fat_max', dayNutrition.fat) ? 'text-green-700' : 'text-red-700'">
+                                    {{ nutritionMatches('fat_min', 'fat_max', dayNutrition.fat) ? '✓' : '✕' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="border p-2">{{ trans('carbohydrates') }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(dayNutrition.carbohydrates) }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(assignedDiet.carbohydrates_min) }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(assignedDiet.carbohydrates_max) }}</td>
+                                <td class="border p-2 text-center" :class="nutritionMatches('carbohydrates_min', 'carbohydrates_max', dayNutrition.carbohydrates) ? 'text-green-700' : 'text-red-700'">
+                                    {{ nutritionMatches('carbohydrates_min', 'carbohydrates_max', dayNutrition.carbohydrates) ? '✓' : '✕' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="border p-2">{{ trans('kilocalories') }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(dayNutrition.calories) }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(assignedDiet.calories_min) }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(assignedDiet.calories_max) }}</td>
+                                <td class="border p-2 text-center" :class="nutritionMatches('calories_min', 'calories_max', dayNutrition.calories) ? 'text-green-700' : 'text-red-700'">
+                                    {{ nutritionMatches('calories_min', 'calories_max', dayNutrition.calories) ? '✓' : '✕' }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table v-else class="w-full table-auto border-collapse">
+                        <thead>
+                            <tr>
+                                <th class="border p-2 text-left">{{ trans('proteins') }}</th>
+                                <th class="border p-2 text-right">{{ trans('fat') }}</th>
+                                <th class="border p-2 text-right">{{ trans('carbohydrates') }}</th>
+                                <th class="border p-2 text-right">{{ trans('kilocalories') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border p-2 text-right">{{ formatNutrition(dayNutrition.proteins) }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(dayNutrition.fat) }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(dayNutrition.carbohydrates) }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(dayNutrition.calories) }}</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
 
