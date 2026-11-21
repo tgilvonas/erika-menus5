@@ -50,10 +50,7 @@ function normalizeMealtimes(items: any[] = []) {
     return items.map((mealtime) => ({
         id: mealtime.id,
         title: mealtime.translation?.translation ?? mealtime.name ?? mealtime.title ?? '',
-        dishes: (mealtime.dishes ?? []).map((dish: any) => ({
-            id: dish.id,
-            title: dish.translation?.translation ?? dish.name ?? dish.title ?? '',
-        })),
+        dishes: (mealtime.dishes ?? []).map((dish: any) => normalizeDish(dish)),
     }));
 }
 
@@ -63,6 +60,20 @@ function mealtimeTitle(mealtime: any) {
 
 function dishTitle(dish: any) {
     return dish.title ?? dish.translation?.translation ?? dish.name ?? dish.id;
+}
+
+function mealtimeNutrition(mealtime: any) {
+    return mealtime.dishes.reduce((totals: any, dish: any) => {
+        totals.proteins += Number(dish.proteins ?? 0);
+        totals.fat += Number(dish.fat ?? 0);
+        totals.carbohydrates += Number(dish.carbohydrates ?? 0);
+        totals.calories += Number(dish.calories ?? 0);
+        return totals;
+    }, { proteins: 0, fat: 0, carbohydrates: 0, calories: 0 });
+}
+
+function formatNutrition(value: number) {
+    return Number(value ?? 0).toFixed(3);
 }
 
 function addMealtime() {
@@ -86,7 +97,14 @@ function addDish(mealtimeIndex: number) {
     if (mealtime.dishes.some((dish: any) => dish.id === id)) return;
 
     const source = dishes.value.find((dish) => Number(dish.id) === id);
-    mealtime.dishes.push({ id, title: source ? dishTitle(source) : String(id) });
+    mealtime.dishes.push(source ? normalizeDish(source) : {
+        id,
+        title: String(id),
+        proteins: 0,
+        fat: 0,
+        carbohydrates: 0,
+        calories: 0,
+    });
     selectedDishId.value = '';
 }
 
@@ -100,6 +118,7 @@ function getDishes() {
     }).then((response) => {
         const data = response.data.data ?? response.data;
         dishes.value = data;
+        syncDishNutrition();
     });
 }
 
@@ -205,6 +224,50 @@ function updateEater(value: unknown) {
     } else {
         eaterId.value = value === null || value === undefined ? '' : String(value);
     }
+}
+
+function dishNutrition(dish: any) {
+    if (dish) {
+        const hasTotals = ['proteins_total', 'fat_total', 'carbohydrates_total', 'calories_total'].some((key) => dish[key] !== undefined);
+        if (hasTotals) {
+            return {
+                proteins: Number(dish.proteins_total ?? 0),
+                fat: Number(dish.fat_total ?? 0),
+                carbohydrates: Number(dish.carbohydrates_total ?? 0),
+                calories: Number(dish.calories_total ?? 0),
+            };
+        }
+
+        return (dish.ingredients ?? []).reduce((totals: any, ingredient: any) => {
+            const massNetto = Number(ingredient.pivot?.mass_netto ?? 0);
+            totals.proteins += massNetto * Number(ingredient.proteins ?? 0);
+            totals.fat += massNetto * Number(ingredient.fat ?? 0);
+            totals.carbohydrates += massNetto * Number(ingredient.carbohydrates ?? 0);
+            totals.calories += massNetto * Number(ingredient.calories ?? 0);
+            return totals;
+        }, { proteins: 0, fat: 0, carbohydrates: 0, calories: 0 });
+    }
+
+    return { proteins: 0, fat: 0, carbohydrates: 0, calories: 0 };
+}
+
+function normalizeDish(dish: any) {
+    return {
+        id: dish.id,
+        title: dishTitle(dish),
+        ...dishNutrition(dish),
+    };
+}
+
+function syncDishNutrition() {
+    mealtimes.value.forEach((mealtime) => {
+        mealtime.dishes.forEach((dish: any) => {
+            const source = dishes.value.find((item) => Number(item.id) === Number(dish.id));
+            if (source) {
+                Object.assign(dish, dishNutrition(source));
+            }
+        });
+    });
 }
 
 onMounted(() => {
@@ -333,14 +396,38 @@ onBeforeUnmount(() => {
                     </div>
 
                     <table v-if="mealtime.dishes.length" class="w-full table-auto border-collapse">
+                        <thead>
+                            <tr>
+                                <th class="border p-2 text-left">{{ trans('dish') }}</th>
+                                <th class="border p-2 text-right">{{ trans('proteins') }}</th>
+                                <th class="border p-2 text-right">{{ trans('fat') }}</th>
+                                <th class="border p-2 text-right">{{ trans('carbohydrates') }}</th>
+                                <th class="border p-2 text-right">{{ trans('kilocalories') }}</th>
+                                <th class="w-24 border p-2"></th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <tr v-for="(dish, dishIndex) in mealtime.dishes" :key="dish.id">
                                 <td class="border p-2">{{ dish.title }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(dish.proteins) }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(dish.fat) }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(dish.carbohydrates) }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(dish.calories) }}</td>
                                 <td class="w-24 border p-2 text-right">
                                     <Button type="button" color="red" @click="removeDish(mealtimeIndex, Number(dishIndex))">{{ trans('delete') }}</Button>
                                 </td>
                             </tr>
                         </tbody>
+                        <tfoot>
+                            <tr class="font-semibold">
+                                <td class="border p-2">{{ trans('total') }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(mealtimeNutrition(mealtime).proteins) }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(mealtimeNutrition(mealtime).fat) }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(mealtimeNutrition(mealtime).carbohydrates) }}</td>
+                                <td class="border p-2 text-right">{{ formatNutrition(mealtimeNutrition(mealtime).calories) }}</td>
+                                <td class="border p-2"></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
 
