@@ -100,6 +100,15 @@ function updateEaterFilter(value: unknown) {
     applyFilters();
 }
 
+function clearFilters() {
+    eaterId.value = '';
+    dateFrom.value = '';
+    dateTo.value = '';
+    dateFromModel.value = null;
+    dateToModel.value = null;
+    applyFilters();
+}
+
 onMounted(() => {
     const flashMessage = (usePage().props as any).flash?.message;
     if (flashMessage) {
@@ -160,6 +169,12 @@ onMounted(() => {
                         @update:model-value="updateDateTo"
                         class="w-full rounded border px-3 py-2"
                     />
+                </div>
+                <div>
+                    <label class="mb-1 block text-sm font-medium">&nbsp;</label>
+                    <Button color="blue" class="w-full mt-2" @click="clearFilters">
+                        {{ trans('clear_filters') }}
+                    </Button>
                 </div>
             </div>
 

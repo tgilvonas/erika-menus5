@@ -126,4 +126,5 @@ return [
     'ingredients_usage_stats' => 'Ingredientų naudojimo statistika',
     'ROLE_DIETOLOGIST' => 'Dietologas',
     'ROLE_SUPERADMIN' => 'Superadministratorius',
+    'clear_filters' => 'Išvalyti filtrus',
 ];

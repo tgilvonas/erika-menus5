@@ -125,4 +125,5 @@ return [
     'ingredients_usage_stats' => 'Ingredients usage stats',
     'ROLE_DIETOLOGIST' => 'Dietologist',
     'ROLE_SUPERADMIN' => 'Superadmin',
+    'clear_filters' => 'Clear filters',
 ];
