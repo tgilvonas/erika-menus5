@@ -175,7 +175,7 @@ onMounted(() => {
                     <tr v-for="day in props.days.data" :key="day.id">
                         <td class="border p-2">{{ day.date }}</td>
                         <td class="border p-2">{{ day.eater_name }}</td>
-                        <td class="border p-2">
+                        <td class="border p-2 text-right space-x-2">
                             <Button @click="router.visit(route('days.edit', { id: day.id }))">{{ trans('edit') }}</Button>
                             <Button color="gray" @click="exportPdf(day)">{{ trans('export_pdf') }}</Button>
                             <Button color="red" @click="deleteDay(day)">{{ trans('delete') }}</Button>
