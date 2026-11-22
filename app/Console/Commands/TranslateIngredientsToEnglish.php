@@ -41,6 +41,14 @@ class TranslateIngredientsToEnglish extends Command
             ->where('lang', 'lt')
             ->whereNotNull('translation')
             ->where('translation', '!=', '')
+            ->whereNotExists(function ($query) {
+                $query->selectRaw('1')
+                    ->from('ingredients_translations as en_translation')
+                    ->whereColumn('en_translation.ingredient_id', 'ingredients_translations.ingredient_id')
+                    ->where('en_translation.lang', 'en')
+                    ->whereNotNull('en_translation.translation')
+                    ->where('en_translation.translation', '!=', '');
+            })
             ->orderBy('ingredient_id')
             ->get();
 
@@ -69,6 +77,8 @@ class TranslateIngredientsToEnglish extends Command
                         ['translation' => mb_substr($english, 0, 250)],
                     );
                 }
+
+                sleep(15);
             } catch (\Throwable $exception) {
                 $this->newLine();
                 $this->error("Ingredient {$translation->ingredient_id}: {$exception->getMessage()}");
