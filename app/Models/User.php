@@ -26,6 +26,7 @@ class User extends Authenticatable
         'email',
         'password',
         'roles',
+        'google_gemini_api_key',
     ];
 
     /**
@@ -36,6 +37,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'google_gemini_api_key',
     ];
 
     /**
@@ -57,6 +59,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'roles' => 'string',
+            'google_gemini_api_key' => 'encrypted',
         ];
     }
 }

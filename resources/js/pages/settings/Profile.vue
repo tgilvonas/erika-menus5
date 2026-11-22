@@ -17,9 +17,10 @@ import { type BreadcrumbItem } from '@/types';
 interface Props {
     mustVerifyEmail: boolean;
     status?: string;
+    hasGoogleGeminiApiKey: boolean;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
 const breadcrumbItems: BreadcrumbItem[] = [
     {
@@ -75,6 +76,37 @@ const user = page.props.auth.user;
                             placeholder="Email address"
                         />
                         <InputError class="mt-2" :message="errors.email" />
+                    </div>
+
+                    <div class="grid gap-2">
+                        <Label for="google_gemini_api_key">Google Gemini API key</Label>
+                        <Input
+                            id="google_gemini_api_key"
+                            type="password"
+                            class="mt-1 block w-full"
+                            name="google_gemini_api_key"
+                            autocomplete="off"
+                            placeholder="Enter a new API key"
+                        />
+                        <p class="text-sm text-muted-foreground">
+                            {{ props.hasGoogleGeminiApiKey
+                                ? 'A Gemini API key is configured. Leave blank to keep it.'
+                                : 'No Gemini API key is configured.' }}
+                        </p>
+                        <InputError class="mt-2" :message="errors.google_gemini_api_key" />
+
+                        <label
+                            v-if="props.hasGoogleGeminiApiKey"
+                            class="mt-1 flex items-center gap-2 text-sm"
+                        >
+                            <input
+                                type="checkbox"
+                                name="clear_google_gemini_api_key"
+                                value="1"
+                                class="size-4 rounded border-neutral-300"
+                            />
+                            Clear the saved Gemini API key
+                        </label>
                     </div>
 
                     <div v-if="mustVerifyEmail && !user.email_verified_at">

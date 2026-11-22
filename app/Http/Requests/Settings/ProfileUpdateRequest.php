@@ -25,6 +25,8 @@ class ProfileUpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
+            'google_gemini_api_key' => ['nullable', 'string', 'max:500'],
+            'clear_google_gemini_api_key' => ['sometimes', 'boolean'],
         ];
     }
 }

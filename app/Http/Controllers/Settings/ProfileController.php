@@ -21,6 +21,7 @@ class ProfileController extends Controller
         return Inertia::render('settings/Profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
+            'hasGoogleGeminiApiKey' => filled($request->user()->google_gemini_api_key),
         ]);
     }
 
@@ -29,7 +30,20 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $validated = $request->validated();
+
+        $googleGeminiApiKey = $validated['google_gemini_api_key'] ?? null;
+        $clearGoogleGeminiApiKey = $request->boolean('clear_google_gemini_api_key');
+
+        unset($validated['google_gemini_api_key'], $validated['clear_google_gemini_api_key']);
+
+        $request->user()->fill($validated);
+
+        if ($clearGoogleGeminiApiKey) {
+            $request->user()->google_gemini_api_key = null;
+        } elseif (filled($googleGeminiApiKey)) {
+            $request->user()->google_gemini_api_key = $googleGeminiApiKey;
+        }
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
