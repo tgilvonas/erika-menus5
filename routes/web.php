@@ -8,6 +8,7 @@ use App\Http\Controllers\EatersController;
 use App\Http\Controllers\IngredientsController;
 use App\Http\Controllers\MealtimesController;
 use App\Http\Controllers\UsersController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -60,6 +61,17 @@ Route::middleware('auth')->group(function () {
         Route::post('/users/delete', [UsersController::class, 'delete'])->name('users.delete');
     });
 });
+
+Route::post('/locale', function (Request $request) {
+    $validated = $request->validate([
+        'locale' => ['required', 'string', 'in:lt,en'],
+    ]);
+
+    $request->session()->put('locale', $validated['locale']);
+    app()->setLocale($validated['locale']);
+
+    return back();
+})->name('locale.update');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

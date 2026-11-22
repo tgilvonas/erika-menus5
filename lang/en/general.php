@@ -131,4 +131,5 @@ return [
     'status' => 'Status',
     'nutrition_matches' => 'Nutrition matches diet',
     'nutrition_does_not_match' => 'Nutrition does not match diet',
+    'enter_text_for_search' => 'Enter text for search',
 ];
