@@ -50,6 +50,8 @@ return [
     'cancel' => 'Cancel',
     'contents_in_1_gram' => 'Nutrition values per 1 gram',
     'calculate_kilocalories_automatically' => 'Calculate kilocalories automatically',
+    'ask_google_gemini' => 'Ask Google Gemini for nutrition values',
+    'asking_google_gemini' => 'Asking Google Gemini...',
     'save' => 'Save',
     'close' => 'Close',
     'ingredient_already_exists' => 'Ingredient already exists',

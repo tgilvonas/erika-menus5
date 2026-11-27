@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/ingredients/json-list', [IngredientsController::class, 'getJsonList'])->name('ingredients.json_list');
     Route::get('/ingredients/{id}', [IngredientsController::class, 'getIngredient'])->name('ingredients.get_ingredient');
     Route::post('/ingredients/save', [IngredientsController::class, 'save'])->name('ingredients.save');
+    Route::post('/ingredients/ask-for-nutrition-values', [IngredientsController::class, 'askForNutritionValues'])->name('ingredients.ask_for_nutrition_values');
     Route::post('/ingredients/delete', [IngredientsController::class, 'delete'])->name('ingredients.delete');
 
     Route::get('/diet-types', [DietTypesController::class, 'index'])->name('diet_types.index');

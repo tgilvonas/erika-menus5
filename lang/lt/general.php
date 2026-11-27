@@ -52,6 +52,8 @@ return [
     'cancel' => 'Atšaukti',
     'contents_in_1_gram' => 'Ingrediento sudėtis 1 grame',
     'calculate_kilocalories_automatically' => 'Skaičiuoti kilokalorijas automatiškai',
+    'ask_google_gemini' => 'Paklausti Google Gemini maistinės vertės',
+    'asking_google_gemini' => 'Klausiama Google Gemini...',
     'save' => 'Išsaugoti',
     'close' => 'Uždaryti',
     'ingredient_already_exists' => 'Ingredientas tokiu pavadinimu jau yra',

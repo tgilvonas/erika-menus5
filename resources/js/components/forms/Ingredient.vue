@@ -18,8 +18,10 @@ const props = defineProps({
 const ingredient = reactive({...props.ingredient});
 const calculateCaloriesAutomatically = ref(true);
 const formIsValid = ref(true);
+const isAskingForNutrition = ref(false);
+const nutritionError = ref('');
 
-const associatedCalories = {
+const associatedCalories: Record<string, number> = {
     proteins: 4,
     fat: 9,
     carbohydrates: 4
@@ -29,7 +31,7 @@ const errors: Record<string, string> = initErrorsObject();
 
 function calculateAndValidate() {
     formIsValid.value = true;
-    const errors: Record<string, string> = initErrorsObject();
+    Object.assign(errors, initErrorsObject());
 
     if (typeof ingredient.title === 'undefined' || ingredient.title.length === 0) {
         errors.title = trans('ingredient_title_is_required');
@@ -110,6 +112,35 @@ function initErrorsObject(): Record<string, string> {
         calories: ''
     }
 }
+
+function askForNutritionValues() {
+    if (!ingredient.title || !ingredient.title.trim()) {
+        nutritionError.value = trans('ingredient_title_is_required');
+        return;
+    }
+
+    isAskingForNutrition.value = true;
+    nutritionError.value = '';
+
+    axios.post(route('ingredients.ask_for_nutrition_values'), {
+        title: ingredient.title,
+    }).then(function(response) {
+        if (response.data.result === 'success') {
+            const nutrition = response.data.nutrition;
+            ingredient.proteins = nutrition.proteins;
+            ingredient.fat = nutrition.fat;
+            ingredient.carbohydrates = nutrition.carbohydrates;
+            ingredient.calories = nutrition.calories;
+            calculateCaloriesAutomatically.value = false;
+            calculateAndValidate();
+        }
+    }).catch(function(error) {
+        nutritionError.value = error.response?.data?.message
+            || trans('error_occured');
+    }).finally(function() {
+        isAskingForNutrition.value = false;
+    });
+}
 </script>
 
 <template>
@@ -130,6 +161,19 @@ function initErrorsObject(): Record<string, string> {
                 <p v-if="errors.title.length > 0" class="mt-1 text-sm text-red-500">
                     {{ errors.title }}
                 </p>
+                <div class="mt-2">
+                    <Button
+                        color="green"
+                        :loading="isAskingForNutrition"
+                        :disabled="!ingredient.title"
+                        @click="askForNutritionValues"
+                    >
+                        {{ isAskingForNutrition ? trans('asking_google_gemini') : trans('ask_google_gemini') }}
+                    </Button>
+                    <p v-if="nutritionError" class="mt-1 text-sm text-red-500">
+                        {{ nutritionError }}
+                    </p>
+                </div>
             </div>
 
             <div class="text-base font-semibold text-gray-800 dark:text-gray-200">
